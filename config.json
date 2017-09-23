@@ -1,0 +1,402 @@
+{
+    "endpoints": {
+        "hellas": {
+            "id": 1,
+            "name": "Hellas TK",
+            "image": "hellas.jpg",
+            "url": "http://www.commodusnet.net/kund/adminschedule.php?YEAR=[year]&MONTH=[month]&DAY=[day]&sess_adm_club_id=19&indoors=1",
+            "daysAhead": 14,
+            "include": true,
+            "location": "Stockholm",
+            "selectors": {
+                "root": "#contentSmall table.border_collapse tr",
+                "time": "td:nth-child(1n) p b",
+                "activity": "a.book center",
+                "court": "table.border_collapse tr:nth-child(1n) td:nth-child([columnIndex]n) p b"
+            }
+        },
+        "matchiPadel": [
+            {
+                "id": 4,
+                "include": false,
+                "name": "Padelverket",
+                "location": "Stockholm",
+                "image": "padelverket.jpg",
+                "url": "https://www.matchi.se/book/listSlots?wl=&sport=5&facility=121&date=[year]-[month]-[day]",
+                "daysAhead": 7
+            },
+            {
+                "id": 10,
+                "include": false,
+                "name": "Ekerö Padel",
+                "location": "Stockholm",
+                "image": "ekeropadel.jpg",
+                "url": "https://www.matchi.se/book/listSlots?wl=&sport=5&facility=95&date=[year]-[month]-[day]",
+                "daysAhead": 7
+            },
+            {
+                "id": 35,
+                "include": false,
+                "name": "Padel Center Göteborg",
+                "image": "padelcenter.jpg",
+                "url": "https://www.matchi.se/book/listSlots?wl=&sport=5&facility=27&date=[year]-[month]-[day]",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 8,
+                "include": false,
+                "name": "PDL Center",
+                "location": "Stockholm",
+                "image": "pdlcenter.jpg",
+                "url": "https://www.matchi.se/book/listSlots?wl=&sport=5&facility=81&date=[year]-[month]-[day]",
+                "daysAhead": 7
+            },
+            {
+                "id": 31,
+                "include": false,
+                "name": "PDL Center Göteborg",
+                "image": "pdlcentergoteborg.jpg",
+                "url": "https://www.matchi.se/book/listSlots?wl=&sport=5&facility=131&date=[year]-[month]-[day]",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            }
+        ],
+        "matchi": [
+            {
+                "id": 2,
+                "include": true,
+                "location": "Stockholm",
+                "name": "Mälarhöjdens TK",
+                "image": "mik.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=53&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14
+            },
+            {
+                "id": 3,
+                "include": false,
+                "name": "Kärrtorps TK",
+                "location": "Stockholm",
+                "image": "karrtorp.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=122&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 5,
+                "include": false,
+                "name": "SALK",
+                "location": "Stockholm",
+                "image": "salk.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=22&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 6,
+                "include": false,
+                "name": "Haga Tennis",
+                "location": "Stockholm",
+                "image": "hagatennis.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=110&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 3
+            },
+            {
+                "id": 7,
+                "include": false,
+                "name": "Frescati",
+                "location": "Stockholm",
+                "image": "frescati.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=44&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 10
+            },
+            {
+                "id": 9,
+                "include": false,
+                "name": "Älta TK",
+                "location": "Stockholm",
+                "image": "alta.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=106&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 11,
+                "include": false,
+                "name": "Skogås Racketcenter",
+                "location": "Stockholm",
+                "image": "skogas.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=99&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 12,
+                "include": false,
+                "name": "Sollentuna Rackethall",
+                "image": "sollentunarackethall.jpg",
+                "location": "Stockholm",
+                "url": "https://www.matchi.se/book/schedule?facilityId=15&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 13,
+                "include": false,
+                "name": "Sollentuna TK - Edsbergshallen",
+                "location": "Stockholm",
+                "image": "sollentunatk.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=24&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 14,
+                "include": false,
+                "name": "Haninge TK",
+                "location": "Stockholm",
+                "image": "haningetk.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=61&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 16,
+                "include": false,
+                "name": "Stora Wäsby TK",
+                "location": "Stockholm",
+                "image": "storawasby.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=132&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 17,
+                "include": false,
+                "image": "sptk.jpg",
+                "location": "Stockholm",
+                "name": "SPTK / Södertälje-Pershagen TK",
+                "url": "https://www.matchi.se/book/schedule?facilityId=71&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 18,
+                "include": false,
+                "name": "Vallentuna TK",
+                "location": "Stockholm",
+                "image": "valletunatk.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=63&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 19,
+                "include": false,
+                "name": "Bålsta TK",
+                "location": "Stockholm",
+                "image": "balstatk.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=28&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 7
+            },
+            {
+                "id": 23,
+                "include": false,
+                "name": "Edsvikens TK",
+                "location": "Stockholm",
+                "image": "edsviken.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=34&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 8
+            },
+            {
+                "id": 24,
+                "include": false,
+                "name": "Saltsjöbadens LTK",
+                "location": "Stockholm",
+                "image": "saltsjobadens-ltk.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=50&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 8
+            },
+            {
+                "id": 25,
+                "include": false,
+                "name": "Älgö Tennisklubb",
+                "location": "Stockholm",
+                "image": "algo-tennisklubb.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=11&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 8
+            },
+            {
+                "id": 26,
+                "include": false,
+                "name": "Storängens Lawn TK",
+                "location": "Stockholm",
+                "image": "storangens-tk.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=41&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 8
+            },
+            {
+                "id": 27,
+                "include": false,
+                "name": "Tumba TK",
+                "image": "tumba-tennis.jpg",
+                "location": "Stockholm",
+                "url": "https://www.matchi.se/book/schedule?facilityId=96&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 8
+            },
+            {
+                "id": 28,
+                "include": false,
+                "name": "Junibacken Tennis",
+                "location": "Stockholm",
+                "image": "junibacken.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=119&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 8
+            },
+            {
+                "id": 29,
+                "include": false,
+                "name": "Partille Tennis",
+                "image": "partille.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=10&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 30,
+                "include": false,
+                "name": "SKF",
+                "image": "skf.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=&date=2[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 32,
+                "include": false,
+                "name": "GLTK",
+                "image": "gltk.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=3&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 33,
+                "include": false,
+                "name": "Idrottssällskapet Gothia",
+                "image": "gothia.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=60&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 34,
+                "include": false,
+                "name": "Mossens Tennisbanor",
+                "image": "mossen.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=13&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 36,
+                "include": false,
+                "name": "Högsbohöjds Tennisklubb",
+                "image": "hogsbohojds.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=9&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 37,
+                "include": false,
+                "name": "Askim Badminton Club",
+                "image": "askim.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=8&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 38,
+                "include": false,
+                "name": "Påvelunds Tennis & Badmintonklubb",
+                "image": "pavelunds.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=17&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 39,
+                "include": false,
+                "name": "Brottkärrs TF",
+                "image": "brottkarrs.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=98&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 40,
+                "include": false,
+                "name": "Torslanda Tennisklubb",
+                "image": "torslanda.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=48&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            },
+            {
+                "id": 41,
+                "include": false,
+                "name": "Hönö Tennissällskap",
+                "image": "hono.jpg",
+                "url": "https://www.matchi.se/book/schedule?facilityId=18&date=[year]-[month]-[day]&sport=1&indoor=true&wl=",
+                "daysAhead": 14,
+                "location": "Göteborg"
+            }
+        ],
+        "enskede": {
+            "name": "Enskede TK",
+            "image": "enskede.jpg",
+            "bookingUrl": "http://www.enskederackethall.se/onlinebokning/",
+            "baseUrl": "http://redirect.bokning11.pastelldata.se/Redirect.aspx?GUID=1538&UNIT=1538&PAGE=LOKALBOKNING",
+            "domain": "http://v6716-profitwebsite.pastelldata.com",
+            "daysAhead": 6,
+            "id": 20,
+            "location": "Stockholm",
+            "include": false,        
+            "tableContainerSelectorId": "ContentPlaceHolder1_TreatmentBookWUC1_bookableTimesTable",
+            "tennisButtonSelectorId": "ContentPlaceHolder1_TreatmentBookWUC1_ctl06",
+            "bookableClass": "ResBookSchemaTableBookButton",
+            "formSelectorId": "form1",
+            "days": [
+                "ContentPlaceHolder1_TreatmentBookWUC1_ctl19",
+                "ContentPlaceHolder1_TreatmentBookWUC1_ctl20",
+                "ContentPlaceHolder1_TreatmentBookWUC1_ctl21",
+                "ContentPlaceHolder1_TreatmentBookWUC1_ctl22",
+                "ContentPlaceHolder1_TreatmentBookWUC1_ctl23",
+                "ContentPlaceHolder1_TreatmentBookWUC1_ctl24",
+                "ContentPlaceHolder1_TreatmentBookWUC1_ctl25"
+            ]
+        },
+        "myCourt": {
+            "loginUrl": "http://www.mycourt.se/index.php",
+            "startPage": "http://www.mycourt.se/your_clubs.php",
+            "daysAhead": 7,
+            "id": 21,
+            "include": true,
+            "email": "tennistider@gmail.com",
+            "password": "hejsan10",
+            "loginClasSelector": "button small-button signin-button",
+            "tennisButtonSelectorId": "ContentPlaceHolder1_TreatmentBookWUC1_ctl07",
+            "bookableClass": "ResBookSchemaTableBookButton",
+            "formSelectorId": "form1",
+            "clubs": [
+                {
+                    "id": 21,
+                    "name": "Tennisstadion",
+                    "image": "tennisstadion.png",
+                    "myCourtClubId": "333",
+                    "bookingUrl": "http://www.mycourt.se/",
+                    "location": "Stockholm"
+                },
+                {
+                    "name": "Stockholms Tennishall",
+                    "id": 22,
+                    "image": "stockholmstennishall.png",
+                    "myCourtClubId": "389",
+                    "bookingUrl": "http://www.mycourt.se/",
+                    "location": "Stockholm"
+                }
+            ]
+        }
+    }
+}
