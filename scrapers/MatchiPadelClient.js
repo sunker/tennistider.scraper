@@ -31,8 +31,9 @@ module.exports = class MatchiPadelClient extends EventEmitter {
     this.repeater()
   }
 
-  async parse($, targetDay, club) {
+  async parse(targetDay, club) {
     try {
+      const $ = await Helper.getUrl(targetDay.url)
       let day = {}
       $('button').filter(function () {
         var element = $(this)

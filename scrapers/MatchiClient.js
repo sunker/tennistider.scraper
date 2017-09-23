@@ -31,8 +31,9 @@ module.exports = class MatchiClient extends EventEmitter {
     this.repeater()
   }
 
-  async parse($, targetDay, club) {
+  async parse(targetDay, club) {
     try {
+      const $ = await Helper.getUrl(targetDay.url)
       let day = {}
       $('[class="slot free"]').filter(function () {
         const element = $(this)

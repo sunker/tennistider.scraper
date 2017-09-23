@@ -27,8 +27,9 @@ module.exports = class HellasClient extends EventEmitter {
     this.repeater()
   }
 
-  async parse($, targetDay) {
+  async parse(targetDay) {
     try {
+      const $ = await Helper.getUrl(targetDay.url)
       let day = {}
       $(selectors.root).filter(function () {
         const element = $(this)
