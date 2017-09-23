@@ -1,5 +1,6 @@
-const cheerio = require('cheerio'),
-  rp = require('request-promise')
+const cheerio = require('cheerio')
+const rp = require('request-promise')
+const Slot = require('../models/MongoSlot')
 
 module.exports = class Helper {
   static async getUrl(url) {
@@ -48,7 +49,7 @@ module.exports = class Helper {
     var currentDate = new Date()
     var targets = []
     for (var index = 0; index < noOfDaysAhead; index++) {
-      var timestamp = new Date(currentDate.getTime());
+      var timestamp = new Date(currentDate.getTime())
       var url = Helper.insertUrlDates(rawUrl, currentDate)
       targets.push({
         clubId: clubId,
@@ -63,5 +64,30 @@ module.exports = class Helper {
     }
 
     return targets
-  };
+  }
+
+  static async saveSlot(key, date, startTime, endTime, clubId, clubName, price, courtNumber, surface, link) {
+    const slot = new Slot({
+      key,
+      date,
+      startTime,
+      endTime,
+      clubId,
+      clubName,
+      price,
+      courtNumber,
+      surface,
+      link
+    })
+
+    return slot.save((err) => {
+      if (err && err.code === 11000) {
+        console.log('Slot was already saved')
+      } else if (err) {
+        console.log(err)
+      } else {
+        console.log('Item saved')
+      }
+    })
+  }
 }

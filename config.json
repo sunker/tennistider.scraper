@@ -6,7 +6,7 @@
             "image": "hellas.jpg",
             "url": "http://www.commodusnet.net/kund/adminschedule.php?YEAR=[year]&MONTH=[month]&DAY=[day]&sess_adm_club_id=19&indoors=1",
             "daysAhead": 14,
-            "include": false,
+            "include": true,
             "location": "Stockholm",
             "selectors": {
                 "root": "#contentSmall table.border_collapse tr",
@@ -27,7 +27,7 @@
             },
             {
                 "id": 10,
-                "include": true,
+                "include": false,
                 "name": "Ekerö Padel",
                 "location": "Stockholm",
                 "image": "ekeropadel.jpg",
@@ -36,7 +36,7 @@
             },
             {
                 "id": 35,
-                "include": true,
+                "include": false,
                 "name": "Padel Center Göteborg",
                 "image": "padelcenter.jpg",
                 "url": "https://www.matchi.se/book/listSlots?wl=&sport=5&facility=27&date=[year]-[month]-[day]",
@@ -65,7 +65,7 @@
         "matchi": [
             {
                 "id": 2,
-                "include": false,
+                "include": true,
                 "location": "Stockholm",
                 "name": "Mälarhöjdens TK",
                 "image": "mik.jpg",
@@ -74,7 +74,7 @@
             },
             {
                 "id": 3,
-                "include": false,
+                "include": true,
                 "name": "Kärrtorps TK",
                 "location": "Stockholm",
                 "image": "karrtorp.jpg",

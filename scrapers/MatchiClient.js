@@ -25,6 +25,7 @@ module.exports = class MatchiClient extends EventEmitter {
       scraperCallback: this.parse
     }
     const slots = await Helper.slotRequestScheduler(context)
+    slots.forEach(slot => Helper.saveSlot(slot.slotKey, slot._date, slot.timeSlot.startTime, slot.timeSlot.endTime, slot.clubId, slot.clubName, slot.price, slot.courtNumber, slot.surface, slot.link))
     this.emit('slotsLoaded', { club: this.club, slots })
 
     this.repeater()
@@ -42,7 +43,7 @@ module.exports = class MatchiClient extends EventEmitter {
           endTime = time.split('-')[1].trim(),
           key = startTime + '-' + endTime + '-' + court
 
-        if (titleArray[0].toLowerCase() === 'ledig' && !day.hasOwnProperty(key)) {  
+        if (titleArray[0].toLowerCase() === 'ledig' && !day.hasOwnProperty(key)) {
           const courtNumber = Number(court.toLowerCase().replace('bana', '').trim())
           const timeSlot = new TimeSlot(Number(startTime.replace(':', '.')), Number(endTime.replace(':', '.')))
           day[key] = new Slot(club.id, club.name, targetDay.timestamp, timeSlot, courtNumber, courtNumber > 5 ? 'grus' : 'hardcourt', 0, club.url)

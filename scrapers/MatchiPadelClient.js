@@ -25,6 +25,7 @@ module.exports = class MatchiPadelClient extends EventEmitter {
       scraperCallback: this.parse
     }
     const slots = await Helper.slotRequestScheduler(context)
+    slots.forEach(slot => Helper.saveSlot(slot.slotKey, slot._date, slot.timeSlot.startTime, slot.timeSlot.endTime, slot.clubId, slot.clubName, slot.price, slot.courtNumber, slot.surface, slot.link))
     this.emit('slotsLoaded', { club: this.club, slots })
 
     this.repeater()
@@ -51,5 +52,5 @@ module.exports = class MatchiPadelClient extends EventEmitter {
     } catch (error) {
       console.log('There was an error scraping ' + club.url, error)
     }
-}
+  }
 }
