@@ -1,0 +1,12 @@
+{
+  "extends": "standard",
+  "plugins": [
+    "standard",
+    "promise"
+  ],
+  "rules": {
+    "one-var": 0,
+    "prefer-promise-reject-errors": 0,
+    "space-before-function-paren": 0
+  }
+}
