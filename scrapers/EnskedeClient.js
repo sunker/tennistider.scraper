@@ -4,7 +4,7 @@ const config = require('../config.json'),
   EventEmitter = require('events').EventEmitter,
   Helper = require('./helper.js'),
   cheerio = require('cheerio'),
-  selectors = require('../config.json').endpoints.hellas.selectors,
+  moment = require('moment'),
   club = require('../config.json').endpoints.enskede,
   webdriver = require('selenium-webdriver'),
   until = webdriver.until,
@@ -19,14 +19,14 @@ module.exports = class EnskedeClient extends EventEmitter {
   async repeater() {
     const url = await this.loadSessionUrl()
     const dayButtons = await this.openSession(url)
-    const targets = this.getTargets(dayButtons)
+    const targets = this.getTargets(8, dayButtons)
     const context = {
       days: targets,
       club: config.endpoints.enskede,
       minDelay: settings.minDelay,
       maxDelay: settings.maxDelay,
       scraperCallback: this.scrapeDay,
-      self: EnskedeClient
+      self: this
     }
 
     const slots = await Helper.slotRequestScheduler(context)
@@ -35,11 +35,9 @@ module.exports = class EnskedeClient extends EventEmitter {
     this.repeater()
   }
 
-  async scrapeDay(day, club) {
-    const { elementId, self } = day
+  async scrapeDay(day, club, self) {
     return new Promise((resolve, reject) => {
-      // self.driver.findElement(webdriver.By.id(elementId)).click().then(() => {
-    self.driver.findElement(webdriver.By.xpath("//option[@value='2017-10-02']")).click().then(() => {
+      self.driver.findElement(webdriver.By.xpath("//option[@value='" + day.timestampFormatted + "']")).click().then(() => {
         self.driver.wait(until.elementLocated(webdriver.By.id(club.tableContainerSelectorId)), 2000).then(() => {
           setTimeout(() => {
             self.driver.findElement(webdriver.By.id(club.tableContainerSelectorId)).getAttribute('innerHTML').then((html) => {
@@ -79,7 +77,7 @@ module.exports = class EnskedeClient extends EventEmitter {
 
         if (!day.hasOwnProperty(key)) {
           const timeSlot = new TimeSlot(Number(startTime.replace('-', '.')))
-          const courtNumber = Number(court.toLowerCase().replace('bana', '').trim())
+          const courtNumber = Number(court.toLowerCase().replace('bana', '').replace('grustennis', '').trim())
           const surface = me.getSurface(courtNumber)
           day[key] = new Slot(club.id, club.name, date, timeSlot, courtNumber, surface, 0, club.bookingUrl)
         }
@@ -113,18 +111,19 @@ module.exports = class EnskedeClient extends EventEmitter {
     }
   }
 
-  getTargets(dayElementsIds) {
+  getTargets(noOfDaysAhead) {
+    var targets = []
     let currentDate = new Date()
-    return dayElementsIds.map(x => {
+    for (var index = 0; index < noOfDaysAhead; index++) {
       var timestamp = new Date(currentDate.getTime())
-      const obj = {
+      targets.push({
         timestamp,
-        elementId: x,
-        self: this
-      }
+        timestampFormattedInversed: moment(timestamp).format('DD-MM-YYYY'),
+        timestampFormatted: moment(timestamp).format('YYYY-MM-DD')
+      })
       currentDate.setDate(currentDate.getDate() + 1)
-      return obj
-    })
+    }
+    return targets
   }
 
   initDriver() {
@@ -151,12 +150,7 @@ module.exports = class EnskedeClient extends EventEmitter {
         this.driver.wait(until.elementLocated(webdriver.By.id(club.tennisButtonSelectorId)), 2000).then(() => {
           this.driver.findElement(webdriver.By.id(club.tennisButtonSelectorId)).click().then(() => {
             this.driver.wait(until.elementLocated(webdriver.By.id(club.tableContainerSelectorId)), 2000).then(() => {
-              this.driver.findElements(webdriver.By.className('ResBookDateButton ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only')).then((elements) => {
-                var promises = elements.map((element) => element.getAttribute('id'))
-                Promise.all(promises).then((values) => {
-                  resolve(values)
-                })
-              })
+              resolve()
             }).catch(err => console.log(err))
           })
         })

@@ -18,7 +18,7 @@ module.exports = class Helper {
           let daySlots = []
           try {
             daySlots = await scraperCallback(day, club, self)
-            console.log(`${day.url ? day.url : day.elementId}: ${daySlots.length} slots found`)
+            console.log(`${day.url ? day.url : day.timestampFormatted}: ${daySlots.length} slots found`)
             slots = [...slots, ...daySlots]
           } catch (error) {
             console.log('Could not scrape day', error)
