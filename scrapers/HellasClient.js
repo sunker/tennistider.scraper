@@ -16,6 +16,7 @@ module.exports = class HellasClient extends EventEmitter {
     let days = Helper.getUrlsForNoOfDaysAhead(config.endpoints.hellas.url, config.endpoints.hellas.daysAhead, config.endpoints.hellas.name)
     const context = {
       days,
+      club: config.endpoints.hellas,
       minDelay: settings.hellasMinDelay,
       maxDelay: settings.hellasMaxDelay,
       scraperCallback: this.parse

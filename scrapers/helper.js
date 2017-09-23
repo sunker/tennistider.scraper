@@ -10,14 +10,14 @@ module.exports = class Helper {
 
   static async slotRequestScheduler(ctx, slots = []) {
     return new Promise((resolve, reject) => {
-      const { days, minDelay, maxDelay, scraperCallback } = ctx
+      const { days, minDelay, maxDelay, scraperCallback, club } = ctx
       if (days.length > 0) {
         let day = days.shift()
         setTimeout(async() => {
           let daySlots = []
           try {
             const html = await Helper.getUrl(day.url)
-            daySlots = await scraperCallback(html, day)
+            daySlots = await scraperCallback(html, day, club)
             console.log(`${day.url}: ${daySlots.length} slots found`)
             slots = [...slots, ...daySlots]
           } catch (error) {

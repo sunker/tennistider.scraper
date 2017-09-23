@@ -6,7 +6,7 @@
             "image": "hellas.jpg",
             "url": "http://www.commodusnet.net/kund/adminschedule.php?YEAR=[year]&MONTH=[month]&DAY=[day]&sess_adm_club_id=19&indoors=1",
             "daysAhead": 14,
-            "include": true,
+            "include": false,
             "location": "Stockholm",
             "selectors": {
                 "root": "#contentSmall table.border_collapse tr",
@@ -74,7 +74,7 @@
             },
             {
                 "id": 3,
-                "include": false,
+                "include": true,
                 "name": "Kärrtorps TK",
                 "location": "Stockholm",
                 "image": "karrtorp.jpg",
