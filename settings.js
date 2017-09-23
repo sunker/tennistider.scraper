@@ -5,5 +5,7 @@ module.exports = Object.freeze({
   hellasMinDelay: dev ? 1 : 3000,
   hellasMaxDelay: dev ? 3 : 10000,
   matchiMinDelay: dev ? 1000 : 6000,
-  matchiMaxDelay: dev ? 5000 : 20000
+  matchiMaxDelay: dev ? 5000 : 20000,
+  matchiPadelMinDelay: dev ? 1000 : 6000,
+  matchiPadelMaxDelay: dev ? 5000 : 20000
 })

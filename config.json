@@ -27,7 +27,7 @@
             },
             {
                 "id": 10,
-                "include": false,
+                "include": true,
                 "name": "Ekerö Padel",
                 "location": "Stockholm",
                 "image": "ekeropadel.jpg",
@@ -36,7 +36,7 @@
             },
             {
                 "id": 35,
-                "include": false,
+                "include": true,
                 "name": "Padel Center Göteborg",
                 "image": "padelcenter.jpg",
                 "url": "https://www.matchi.se/book/listSlots?wl=&sport=5&facility=27&date=[year]-[month]-[day]",
@@ -65,7 +65,7 @@
         "matchi": [
             {
                 "id": 2,
-                "include": true,
+                "include": false,
                 "location": "Stockholm",
                 "name": "Mälarhöjdens TK",
                 "image": "mik.jpg",
@@ -74,7 +74,7 @@
             },
             {
                 "id": 3,
-                "include": true,
+                "include": false,
                 "name": "Kärrtorps TK",
                 "location": "Stockholm",
                 "image": "karrtorp.jpg",
@@ -372,7 +372,7 @@
             "startPage": "http://www.mycourt.se/your_clubs.php",
             "daysAhead": 7,
             "id": 21,
-            "include": true,
+            "include": false,
             "email": "tennistider@gmail.com",
             "password": "hejsan10",
             "loginClasSelector": "button small-button signin-button",

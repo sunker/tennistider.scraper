@@ -3,7 +3,7 @@ const Slot = require('../models/Slot.js'),
   Helper = require('./helper.js'),
   TimeSlot = require('../models/TimeSlot')
 
-module.exports = class MatchiClient extends EventEmitter {
+module.exports = class MatchiPadelClient extends EventEmitter {
   constructor(club, delay) {
     super()
     this.club = club
@@ -33,25 +33,23 @@ module.exports = class MatchiClient extends EventEmitter {
   async parse($, targetDay, club) {
     try {
       let day = {}
-      $('[class="slot free"]').filter(function () {
-        const element = $(this)
-        const titleArray = element.attr('title').split('<br>'),
-          court = titleArray[1],
-          time = titleArray[2],
-          startTime = time.split('-')[0].trim(),
-          endTime = time.split('-')[1].trim(),
+      $('button').filter(function () {
+        var element = $(this)
+        const text = element.text().trim().replace(/ /g, '').replace(/(\r\n|\n|\r)/gm, ''),
+          court = 1,
+          startTime = text.substring(0, 2),
+          endTime = text.substring(2),
           key = startTime + '-' + endTime + '-' + court
 
-        if (titleArray[0].toLowerCase() === 'ledig' && !day.hasOwnProperty(key)) {  
-          const courtNumber = Number(court.toLowerCase().replace('bana', '').trim())
+        if (!day.hasOwnProperty(key)) {
           const timeSlot = new TimeSlot(Number(startTime.replace(':', '.')), Number(endTime.replace(':', '.')))
-          day[key] = new Slot(club.id, club.name, targetDay.timestamp, timeSlot, courtNumber, courtNumber > 5 ? 'grus' : 'hardcourt', 0, club.url)
+          day[key] = new Slot(club.id, club.name, targetDay.timestamp, timeSlot, court, '', 0, club.url)
         }
       })
 
       return Object.keys(day).map(key => day[key])
     } catch (error) {
-      console.log('There was an error scraping ' + this.url ? this.url : '')
+      console.log('There was an error scraping ' + club.url, error)
     }
-  }
+}
 }
