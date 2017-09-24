@@ -45,7 +45,7 @@
             },
             {
                 "id": 8,
-                "include": true,
+                "include": false,
                 "name": "PDL Center",
                 "location": "Stockholm",
                 "image": "pdlcenter.jpg",
@@ -360,9 +360,9 @@
         "myCourt": {
             "loginUrl": "http://www.mycourt.se/index.php",
             "startPage": "http://www.mycourt.se/your_clubs.php",
-            "daysAhead": 7,
+            "daysAhead": 14,
             "id": 21,
-            "include": false,
+            "include": true,
             "email": "tennistider@gmail.com",
             "password": "hejsan10",
             "loginClasSelector": "button small-button signin-button",
@@ -383,6 +383,14 @@
                     "id": 22,
                     "image": "stockholmstennishall.png",
                     "myCourtClubId": "389",
+                    "bookingUrl": "http://www.mycourt.se/",
+                    "location": "Stockholm"
+                },
+                {
+                    "name": "TSK Malmen",
+                    "id": 42,
+                    "image": "stockholmstennishall.png",
+                    "myCourtClubId": "386",
                     "bookingUrl": "http://www.mycourt.se/",
                     "location": "Stockholm"
                 }

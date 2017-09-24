@@ -94,7 +94,8 @@ module.exports = class EnskedeClient extends EventEmitter {
     try {
       const columnId = element.closest('td').index()
       const columnHeader = $('[class="ResBookTableRowHeader"]').children()[columnId]
-      return $('span', columnHeader).html().replace(' Tennis', '')
+      const number = $('span', columnHeader).html().replace(/\D/g, '')
+      return number || columnId
     } catch (error) {
       console.log('Could not parse court number from enskede day')
       return 'unknown courtnumber'

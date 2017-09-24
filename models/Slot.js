@@ -1,4 +1,5 @@
-var TimeSlot = require('./TimeSlot')
+const TimeSlot = require('./TimeSlot')
+const randomstring = require('randomstring')
 
 module.exports = class Slot {
   constructor(clubId, clubName, date, timeSlot, courtNumber, surface, price, link) {
@@ -63,7 +64,7 @@ module.exports = class Slot {
   }
 
   get slotKey() {
-    return this.date.getFullYear() + '_' + (this.date.getMonth() + 1) + '_' + this.date.getDate() + '_' + this.clubId + '_' + this.timeSlot.toString() + '_' + (this.surface ? this.surface : 'uknownsurface')
+    return this.date.getFullYear() + '_' + (this.date.getMonth() + 1) + '_' + this.date.getDate() + '_' + this.clubId + '_' + this.timeSlot.toString() + '_' + (this.surface ? this.surface : 'uknownsurface') + '_' + this.courtNumber
   }
 
   getKey(userId) {

@@ -20,7 +20,7 @@ module.exports = class Helper {
           let daySlots = []
           try {
             daySlots = await scraperCallback(day, club, self)
-            console.log(`${day.url ? day.url : day.timestampFormatted}: ${daySlots.length} slots found`)
+            console.log(`${day.url ? day.url : club.name}: ${daySlots.length} slots found`)
             slots = [...slots, ...daySlots]
           } catch (error) {
             console.log('Could not scrape day', error)
@@ -85,13 +85,15 @@ module.exports = class Helper {
         if (err || docs) {
           resolve(false)
         } else {
-          slot.save().then((res) => {
-            resolve(true)
-          }, () => false).catch(err => {
-            if (err && err.code !== 11000) {
-              console.log(err)
+          slot.save(function (err) {
+            if (err) {
+              if (err.code !== 11000) {
+                console.log(err)
+              }
+              resolve(false)
+            } else {
+              resolve(true)
             }
-            resolve(false)
           })
         }
       })
