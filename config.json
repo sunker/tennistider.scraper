@@ -6,7 +6,7 @@
             "image": "hellas.jpg",
             "url": "http://www.commodusnet.net/kund/adminschedule.php?YEAR=[year]&MONTH=[month]&DAY=[day]&sess_adm_club_id=19&indoors=1",
             "daysAhead": 4,
-            "include": false,
+            "include": true,
             "location": "Stockholm",
             "selectors": {
                 "root": "#contentSmall table.border_collapse tr",
@@ -18,7 +18,7 @@
         "matchiPadel": [
             {
                 "id": 4,
-                "include": false,
+                "include": true,
                 "name": "Padelverket",
                 "location": "Stockholm",
                 "image": "padelverket.jpg",
@@ -65,7 +65,7 @@
         "matchi": [
             {
                 "id": 2,
-                "include": false,
+                "include": true,
                 "location": "Stockholm",
                 "name": "Mälarhöjdens TK",
                 "image": "mik.jpg",
@@ -74,7 +74,7 @@
             },
             {
                 "id": 3,
-                "include": false,
+                "include": true,
                 "name": "Kärrtorps TK",
                 "location": "Stockholm",
                 "image": "karrtorp.jpg",
@@ -83,7 +83,7 @@
             },
             {
                 "id": 5,
-                "include": false,
+                "include": true,
                 "name": "SALK",
                 "location": "Stockholm",
                 "image": "salk.jpg",
@@ -352,7 +352,7 @@
             "daysAhead": 8,
             "id": 20,
             "location": "Stockholm",
-            "include": false,
+            "include": true,
             "tableContainerSelectorId": "ContentPlaceHolder1_TreatmentBookWUC1_bookableTimesTable",
             "tennisButtonSelectorId": "ContentPlaceHolder1_TreatmentBookWUC1_ctl06",
             "formSelectorId": "form1"

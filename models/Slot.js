@@ -1,5 +1,4 @@
 const TimeSlot = require('./TimeSlot')
-const randomstring = require('randomstring')
 
 module.exports = class Slot {
   constructor(clubId, clubName, date, timeSlot, courtNumber, surface, price, link) {

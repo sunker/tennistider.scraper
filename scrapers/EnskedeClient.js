@@ -40,10 +40,14 @@ module.exports = class EnskedeClient extends EventEmitter {
     return new Promise((resolve, reject) => {
       self.driver.findElement(webdriver.By.xpath("//option[@value='" + day.timestampFormatted + "']")).click().then(() => {
         self.driver.wait(until.elementLocated(webdriver.By.id(club.tableContainerSelectorId)), 3000).then(() => {
-          setTimeout(() => {
-            self.driver.findElement(webdriver.By.id(club.tableContainerSelectorId)).getAttribute('innerHTML').then((html) => {
+          setTimeout(async() => {
+            try {
+              const target = await self.driver.findElement(webdriver.By.id(club.tableContainerSelectorId))
+              const html = await target.getAttribute('innerHTML')
               resolve(self.parse(cheerio.load(html), day, self, club))
-            })
+            } catch (error) {
+              resolve([])
+            }
           }, 1000)
         })
       }).catch(err => {
