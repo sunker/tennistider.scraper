@@ -4,6 +4,7 @@ const Koa = require('koa'),
   koaErrorhandler = require('./middleware/errorHandler'),
   koaHealth = require('./middleware/health'),
   mongoose = require('mongoose'),
+  a = require('./models/MongoSlot'),
   listener = require('./listener'),
   app = new Koa(),
   router = new Router()

@@ -5,7 +5,7 @@
             "name": "Hellas TK",
             "image": "hellas.jpg",
             "url": "http://www.commodusnet.net/kund/adminschedule.php?YEAR=[year]&MONTH=[month]&DAY=[day]&sess_adm_club_id=19&indoors=1",
-            "daysAhead": 14,
+            "daysAhead": 4,
             "include": false,
             "location": "Stockholm",
             "selectors": {
@@ -45,12 +45,12 @@
             },
             {
                 "id": 8,
-                "include": false,
+                "include": true,
                 "name": "PDL Center",
                 "location": "Stockholm",
                 "image": "pdlcenter.jpg",
                 "url": "https://www.matchi.se/book/listSlots?wl=&sport=5&facility=81&date=[year]-[month]-[day]",
-                "daysAhead": 7
+                "daysAhead": 1
             },
             {
                 "id": 31,
@@ -58,7 +58,7 @@
                 "name": "PDL Center Göteborg",
                 "image": "pdlcentergoteborg.jpg",
                 "url": "https://www.matchi.se/book/listSlots?wl=&sport=5&facility=131&date=[year]-[month]-[day]",
-                "daysAhead": 14,
+                "daysAhead": 2,
                 "location": "Göteborg"
             }
         ],
@@ -349,23 +349,13 @@
             "bookingUrl": "http://www.enskederackethall.se/onlinebokning/",
             "baseUrl": "http://redirect.bokning11.pastelldata.se/Redirect.aspx?GUID=1538&UNIT=1538&PAGE=LOKALBOKNING",
             "domain": "http://v6716-profitwebsite.pastelldata.com",
-            "daysAhead": 6,
+            "daysAhead": 8,
             "id": 20,
             "location": "Stockholm",
-            "include": true,
+            "include": false,
             "tableContainerSelectorId": "ContentPlaceHolder1_TreatmentBookWUC1_bookableTimesTable",
             "tennisButtonSelectorId": "ContentPlaceHolder1_TreatmentBookWUC1_ctl06",
-            "bookableClass": "ResBookSchemaTableBookButton",
-            "formSelectorId": "form1",
-            "days": [
-                "ContentPlaceHolder1_TreatmentBookWUC1_ctl19",
-                "ContentPlaceHolder1_TreatmentBookWUC1_ctl20",
-                "ContentPlaceHolder1_TreatmentBookWUC1_ctl21",
-                "ContentPlaceHolder1_TreatmentBookWUC1_ctl22",
-                "ContentPlaceHolder1_TreatmentBookWUC1_ctl23",
-                "ContentPlaceHolder1_TreatmentBookWUC1_ctl24",
-                "ContentPlaceHolder1_TreatmentBookWUC1_ctl25"
-            ]
+            "formSelectorId": "form1"
         },
         "myCourt": {
             "loginUrl": "http://www.mycourt.se/index.php",

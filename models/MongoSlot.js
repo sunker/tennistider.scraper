@@ -19,9 +19,11 @@ const slotSchema = new Schema({
   clubId: Number,
   clubName: String,
   price: Number,
-  courtNumber: Number,  
+  courtNumber: Number,
   surface: String,
   link: String
 })
 
-module.exports = mongoose.model('slot', slotSchema)
+const slotModel = mongoose.model('slot', slotSchema)
+
+module.exports = slotModel

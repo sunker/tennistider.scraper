@@ -19,7 +19,7 @@ module.exports = class EnskedeClient extends EventEmitter {
   async repeater() {
     const url = await this.loadSessionUrl()
     const dayButtons = await this.openSession(url)
-    const targets = this.getTargets(8, dayButtons)
+    const targets = this.getTargets(config.endpoints.enskede.daysAhead, dayButtons)
     const context = {
       days: targets,
       club: config.endpoints.enskede,
@@ -30,15 +30,16 @@ module.exports = class EnskedeClient extends EventEmitter {
     }
 
     const slots = await Helper.slotRequestScheduler(context)
-    slots.forEach(slot => Helper.saveSlot(slot.slotKey, slot._date, slot.timeSlot.startTime, slot.timeSlot.endTime, slot.clubId, slot.clubName, slot.price, slot.courtNumber, slot.surface, slot.link))
-    this.emit('slotsLoaded', slots)
+    const savedSlots = await Promise.all(slots.map(slot => Helper.saveSlot(slot.slotKey, slot._date, slot.timeSlot.startTime, slot.timeSlot.endTime, slot.clubId, slot.clubName, slot.price, slot.courtNumber, slot.surface, slot.link)))
+    this.emit('slotsLoaded',
+      Object.assign({}, { slots }, { foundSlots: slots.length }, { savedSlots: savedSlots.filter(x => x).length }))
     this.repeater()
   }
 
   async scrapeDay(day, club, self) {
     return new Promise((resolve, reject) => {
       self.driver.findElement(webdriver.By.xpath("//option[@value='" + day.timestampFormatted + "']")).click().then(() => {
-        self.driver.wait(until.elementLocated(webdriver.By.id(club.tableContainerSelectorId)), 2000).then(() => {
+        self.driver.wait(until.elementLocated(webdriver.By.id(club.tableContainerSelectorId)), 3000).then(() => {
           setTimeout(() => {
             self.driver.findElement(webdriver.By.id(club.tableContainerSelectorId)).getAttribute('innerHTML').then((html) => {
               resolve(self.parse(cheerio.load(html), day, self, club))

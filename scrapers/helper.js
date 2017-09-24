@@ -1,5 +1,7 @@
 const cheerio = require('cheerio')
 const rp = require('request-promise')
+const mongoose = require('mongoose')
+const Slots = mongoose.model('slot')
 const Slot = require('../models/MongoSlot')
 
 module.exports = class Helper {
@@ -78,15 +80,21 @@ module.exports = class Helper {
       surface,
       link
     })
-
-    return slot.save((err) => {
-      if (err && err.code === 11000) {
-        console.log('Slot was already saved')
-      } else if (err) {
-        console.log(err)
-      } else {
-        console.log('Item saved')
-      }
+    return new Promise(resolve => {
+      Slots.findOne({ key: slot.key }, (err, docs) => {
+        if (err || docs) {
+          resolve(false)
+        } else {
+          slot.save().then((res) => {
+            resolve(true)
+          }, () => false).catch(err => {
+            if (err && err.code !== 11000) {
+              console.log(err)
+            }
+            resolve(false)
+          })
+        }
+      })
     })
   }
 }

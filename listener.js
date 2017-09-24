@@ -13,8 +13,8 @@ module.exports = {
       hellasClient.init()
     }
 
-    hellasClient.on('slotsLoaded', (slots) => {
-      console.log(`${slots.length} slots found at Hellas TK`)
+    hellasClient.on('slotsLoaded', (res) => {
+      console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at Hellas TK`)
     })
 
     const enskedeClient = new EnskedeClient()
@@ -22,8 +22,8 @@ module.exports = {
       enskedeClient.init()
     }
 
-    enskedeClient.on('slotsLoaded', (slots) => {
-      console.log(`${slots.length} slots found at Hellas TK`)
+    enskedeClient.on('slotsLoaded', (res) => {
+      console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at Enskede`)
     })
 
     const matchiClubs = config.endpoints.matchi.filter(x => x.include)
@@ -31,8 +31,8 @@ module.exports = {
       const delay = { minDelay: settings.matchiMinDelay * matchiClubs.length, maxDelay: settings.matchiMaxDelay * matchiClubs.length }
       const matchiClient = new MatchiClient(club, delay)
       setTimeout(() => matchiClient.init(), Helper.randomIntFromInterval(settings.matchiMinDelay, settings.matchiMaxDelay))
-      matchiClient.on('slotsLoaded', ({ slots, club }) => {
-        console.log(`${slots.length} slots found at ${club.name}`)
+      matchiClient.on('slotsLoaded', (res) => {
+        console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at ${club.name}`)
       })
     })
 
@@ -41,8 +41,8 @@ module.exports = {
       const delay = { minDelay: settings.matchiPadelMinDelay * matchiPadelClubs.length, maxDelay: settings.matchiPadelMaxDelay * matchiPadelClubs.length }
       const matchiPadelClient = new MatchiPadelClient(club, delay)
       setTimeout(() => matchiPadelClient.init(), Helper.randomIntFromInterval(settings.matchiPadelMinDelay, settings.matchiPadelMaxDelay))
-      matchiPadelClient.on('slotsLoaded', ({ slots, club }) => {
-        console.log(`${slots.length} slots found at ${club.name}`)
+      matchiPadelClient.on('slotsLoaded', (res) => {
+        console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at ${club.name}`)
       })
     })
   }
