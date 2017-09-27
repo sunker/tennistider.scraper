@@ -9,6 +9,8 @@ const Koa = require('koa'),
   app = new Koa(),
   router = new Router()
 
+console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+
 app.use(koaHealth)
 app.use(koaErrorhandler)
 

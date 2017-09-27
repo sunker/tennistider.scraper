@@ -18,7 +18,7 @@ module.exports = class MyCourtClient extends EventEmitter {
 
   async repeater() {
     this.logIn(config.endpoints.myCourt.loginUrl).then(async() => {
-      this.scrapeClubsRecursively(Object.assign([], club.clubs)).then((slots) => {
+      this.scrapeClubsRecursively(Object.assign([], club.clubs.filter(x => x.include))).then((slots) => {
         this.repeater()
       })
     })
@@ -130,7 +130,7 @@ module.exports = class MyCourtClient extends EventEmitter {
 
         if (!day.hasOwnProperty(key)) {
           const timeSlot = new TimeSlot(Number(startTime), Number(endTime))
-          day[key] = new Slot(club.id, club.name, timestamp, timeSlot, court, court > 5 ? 'grus' : 'hardcourt', 0, club.bookingUrl)
+          day[key] = new Slot(club.id, club.name, timestamp, timeSlot, court, 'hardcourt', 0, club.bookingUrl)
         }
       })
 
