@@ -22,4 +22,4 @@ listener.init()
 
 app.use(router.routes())
 app.use(router.allowedMethods())
-app.listen(process.env.SERVICE_PORT || '3010')
+app.listen(process.env.PORT || '3010')
