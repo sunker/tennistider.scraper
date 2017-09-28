@@ -182,7 +182,7 @@ module.exports = class MyCourtClient extends EventEmitter {
   initDriver() {
     try {
       this.driver = new webdriver.Builder()
-        .forBrowser('chrome')
+        .forBrowser('phantomjs')
         .build()
     } catch (error) {
       console.log(error)
@@ -191,50 +191,45 @@ module.exports = class MyCourtClient extends EventEmitter {
 
   async logIn(url) {
     return new Promise((resolve, reject) => {
-      try {
-        this.driver.get(url).then(async() => {
-          const elements = await this.driver.findElements(webdriver.By.className(club.loginClasSelector)) // .then((elements) => {
-          if (elements.length > 0) {
-            elements[0].click().then(() => {
-              this.driver.wait(until.elementLocated(webdriver.By.id('email')), 3000).then(() => {
+      this.driver.get(url).then(async() => {
+        const elements = await this.driver.findElements(webdriver.By.className(club.loginClasSelector)) // .then((elements) => {
+        if (elements.length > 0) {
+          elements[0].click().then(() => {
+            this.driver.wait(until.elementLocated(webdriver.By.id('email')), 3000).then(() => {
+              setTimeout(async() => {
+                this.driver.findElement(webdriver.By.id('email')).sendKeys(club.email)
+                this.driver.findElement(webdriver.By.id('password')).sendKeys(club.password)
+                const elems = await this.driver.findElements(webdriver.By.name('agree_terms_conditions'))
+                elems.forEach((element) => {
+                  var elem = element
+                  element.getAttribute('type').then((value) => {
+                    if (value && value.toLowerCase() === 'checkbox') {
+                      this.driver.executeScript('arguments[0].setAttribute(\'checked\', \'checkeed\')', elem)
+                    }
+                  })
+                })
                 setTimeout(async() => {
-                  this.driver.findElement(webdriver.By.id('email')).sendKeys(club.email)
-                  this.driver.findElement(webdriver.By.id('password')).sendKeys(club.password)
-                  const elems = await this.driver.findElements(webdriver.By.name('agree_terms_conditions'))
-                  elems.forEach((element) => {
-                    var elem = element
-                    element.getAttribute('type').then((value) => {
-                      if (value && value.toLowerCase() === 'checkbox') {
-                        this.driver.executeScript('arguments[0].setAttribute(\'checked\', \'checkeed\')', elem)
+                  const elements = await this.driver.findElements(webdriver.By.className('button primary-button track-event'))
+                  elements.forEach((element) => {
+                    element.getAttribute('value').then((value) => {
+                      if (value && value.toLowerCase() === 'logga in') {
+                        element.click().then(() => {
+                          resolve()
+                        })
                       }
                     })
                   })
-                  setTimeout(async() => {
-                    const elements = await this.driver.findElements(webdriver.By.className('button primary-button track-event'))
-                    elements.forEach((element) => {
-                      element.getAttribute('value').then((value) => {
-                        if (value && value.toLowerCase() === 'logga in') {
-                          element.click().then(() => {
-                            resolve()
-                          })
-                        }
-                      })
-                    })
-                  }, 1000)
                 }, 1000)
-              })
+              }, 1000)
             })
-          } else {
-            // Already logged in
-            this.driver.get(club.startPage).then(() => {
-              resolve()
-            })
-          }
-        })
-      } catch (error) {
-        console.log('There was an error logging in to mycourt: ' + error)
-        reject()
-      }
+          })
+        } else {
+          // Already logged in
+          this.driver.get(club.startPage).then(() => {
+            resolve()
+          })
+        }
+      })
     })
   }
 }

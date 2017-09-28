@@ -135,7 +135,7 @@ module.exports = class EnskedeClient extends EventEmitter {
   initDriver() {
     try {
       this.driver = new webdriver.Builder()
-        .forBrowser('chrome')
+        .forBrowser('phantomjs')
         .build()
     } catch (error) {
       console.log(error)

@@ -5,7 +5,7 @@
             "name": "Hellas TK",
             "image": "hellas.jpg",
             "url": "http://www.commodusnet.net/kund/adminschedule.php?YEAR=[year]&MONTH=[month]&DAY=[day]&sess_adm_club_id=19&indoors=1",
-            "daysAhead": 4,
+            "daysAhead": 14,
             "include": true,
             "location": "Stockholm",
             "selectors": {
