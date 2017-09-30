@@ -37,8 +37,9 @@ module.exports = class HellasClient extends EventEmitter {
         const time = $(selectors.time, element).html()
         element.children().each((columnIndex, activitySelctor) => {
           const activityValue = $(selectors.activity, activitySelctor).html()
+          console.log(activityValue)
           if (activityValue && activityValue.toLowerCase() === 'boka') {
-            const court = $(selectors.court.replace('[columnIndex]', columnIndex)).html(),
+            const court = $(selectors.court.replace('[columnIndex]', columnIndex + 1)).html(),
               startTime = time.split('-')[0],
               endTime = time.split('-')[1],
               key = time + '-' + court,
