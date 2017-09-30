@@ -37,7 +37,6 @@ module.exports = class HellasClient extends EventEmitter {
         const time = $(selectors.time, element).html()
         element.children().each((columnIndex, activitySelctor) => {
           const activityValue = $(selectors.activity, activitySelctor).html()
-          console.log(activityValue)
           if (activityValue && activityValue.toLowerCase() === 'boka') {
             const court = $(selectors.court.replace('[columnIndex]', columnIndex + 1)).html(),
               startTime = time.split('-')[0],
@@ -52,6 +51,7 @@ module.exports = class HellasClient extends EventEmitter {
               const courtNumber = Number(court.toLowerCase().replace('bana', '').trim())
               const timeSlot = new TimeSlot(Number(startTime.replace(':', '.')), Number(endTime.replace(':', '.')))
               day[key] = new Slot(club.id, club.name, targetDay.timestamp, timeSlot, courtNumber, courtNumber > 6 ? 'grus' : 'hardcourt', 0, url.replace(/&amp;/g, '&'))
+              console.log(day[key].slotKey)
             }
           }
         })
