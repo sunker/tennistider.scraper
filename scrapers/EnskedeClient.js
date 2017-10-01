@@ -5,10 +5,10 @@ const config = require('../config.json'),
   Helper = require('./helper.js'),
   cheerio = require('cheerio'),
   moment = require('moment'),
-  club = require('../config.json').endpoints.enskede,
   webdriver = require('selenium-webdriver'),
   until = webdriver.until,
-  TimeSlot = require('../models/TimeSlot')
+  TimeSlot = require('../models/TimeSlot'),
+  rp = require('request-promise')
 
 module.exports = class EnskedeClient extends EventEmitter {
   init() {
@@ -17,12 +17,13 @@ module.exports = class EnskedeClient extends EventEmitter {
   }
 
   async repeater() {
-    const url = await this.loadSessionUrl()
-    const dayButtons = await this.openSession(url)
+    const club = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs => clubs.find(club => club.tag === 'enskede'))
+    const url = await this.loadSessionUrl(club)
+    const dayButtons = await this.openSession(club, url)
     const targets = this.getTargets(config.endpoints.enskede.daysAhead, dayButtons)
     const context = {
       days: targets,
-      club: config.endpoints.enskede,
+      club,
       minDelay: settings.minDelay,
       maxDelay: settings.maxDelay,
       scraperCallback: this.scrapeDay,
@@ -142,7 +143,7 @@ module.exports = class EnskedeClient extends EventEmitter {
     }
   };
 
-  async loadSessionUrl() {
+  async loadSessionUrl(club) {
     return this.driver.get(club.baseUrl).then(() =>
       this.driver.wait(until.elementLocated(webdriver.By.id(club.formSelectorId)), 2000).then(() =>
         this.driver.findElement(webdriver.By.id(club.formSelectorId)).getAttribute('action')
@@ -150,7 +151,7 @@ module.exports = class EnskedeClient extends EventEmitter {
     )
   }
 
-  async openSession(url) {
+  async openSession(club, url) {
     return new Promise((resolve) => {
       return this.driver.get(url).then(() => {
         this.driver.wait(until.elementLocated(webdriver.By.id(club.tennisButtonSelectorId)), 2000).then(() => {

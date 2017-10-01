@@ -10,26 +10,25 @@ const rp = require('request-promise')
 
 module.exports = {
   init() {
-    // const hellasClient = new HellasClient()
-    // if (config.endpoints.hellas.include) {
-    //   hellasClient.init()
-    // }
-    // hellasClient.on('slotsLoaded', (res) => {
-    //   console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at Hellas TK`)
-    // })
+    const hellasClient = new HellasClient()
+    if (config.endpoints.hellas.include) {
+      hellasClient.init()
+    }
+    hellasClient.on('slotsLoaded', (res) => {
+      console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at Hellas TK`)
+    })
 
-    // const enskedeClient = new EnskedeClient()
-    // if (config.endpoints.enskede.include) {
-    //   enskedeClient.init()
-    // }
-    // enskedeClient.on('slotsLoaded', (res) => {
-    //   console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at Enskede`)
-    // })
-
+    const enskedeClient = new EnskedeClient()
+    if (config.endpoints.enskede.include) {
+      enskedeClient.init()
+    }
+    enskedeClient.on('slotsLoaded', (res) => {
+      console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at Enskede`)
+    })
 
     this.initMycourt()
-    // this.repeatMatchi()
-    // this.repeatMatchiPadel()
+    this.repeatMatchi()
+    this.repeatMatchiPadel()
   },
   async initMycourt() {
     const myCourtClient = new MyCourtClient()
