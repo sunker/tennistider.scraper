@@ -8,7 +8,8 @@ const config = require('../config.json'),
   club = require('../config.json').endpoints.myCourt,
   webdriver = require('selenium-webdriver'),
   until = webdriver.until,
-  TimeSlot = require('../models/TimeSlot')
+  TimeSlot = require('../models/TimeSlot'),
+  rp = require('request-promise')
 
 module.exports = class MyCourtClient extends EventEmitter {
   init() {
@@ -18,7 +19,8 @@ module.exports = class MyCourtClient extends EventEmitter {
 
   async repeater() {
     this.logIn(config.endpoints.myCourt.loginUrl).then(async() => {
-      this.scrapeClubsRecursively(Object.assign([], club.clubs.filter(x => x.include))).then((slots) => {
+      const clubs = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs => clubs.filter(club => club.tag === 'mycourt'))
+      this.scrapeClubsRecursively(clubs).then((slots) => {
         this.repeater()
       })
     })
@@ -77,7 +79,7 @@ module.exports = class MyCourtClient extends EventEmitter {
         try {
           target = await self.driver.findElement(webdriver.By.xpath("//div[@date='" + day.format2 + "']"))
         } catch (error) {
-          return self.driver.findElement(webdriver.By.id('calender-next-week')).click().then(() => {
+          return self.clickNext().then(() => {
             resolve(self.scrapeDay(day, club, self))
           })
         }
@@ -167,17 +169,25 @@ module.exports = class MyCourtClient extends EventEmitter {
     }
   }
 
+  async clickNext() {
+    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_rgt.png']")).click()
+  }
+
+  async clickPrevious() {
+    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_lft.png']")).click()
+  }
+
   async getAllTargets(elements = [], week = 3) {
     return new Promise(async resolve => {
       if (week !== 0) {
         const weekElements = await this.getElementsForWeek(week)
-        return this.driver.findElement(webdriver.By.id('calender-next-week')).click().then(() => {
+        return this.clickNext().then(() => {
           resolve(this.getAllTargets([...elements, ...weekElements], --week))
         })
       } else {
-        return this.driver.findElement(webdriver.By.id('calender-prev-week')).click()
-          .then(() => this.driver.findElement(webdriver.By.id('calender-prev-week')).click()
-            .then(() => this.driver.findElement(webdriver.By.id('calender-prev-week')).click()
+        return this.clickPrevious()
+          .then(() => this.clickPrevious()
+            .then(() => this.clickPrevious()
               .then(() => resolve(elements.filter(x => this.dateInRange(x.timestamp))))))
       }
     })
@@ -189,7 +199,8 @@ module.exports = class MyCourtClient extends EventEmitter {
     today.setDate(today.getDate() + -1)
     lastDate.setDate(lastDate.getDate() + 13)
 
-    return date.getTime() >= today.getTime() && date.getTime() <= lastDate.getTime()
+    const a = date.getTime() >= today.getTime() && date.getTime() <= lastDate.getTime()
+    return a
   }
 
   async getElementsForWeek(week) {
@@ -210,7 +221,9 @@ module.exports = class MyCourtClient extends EventEmitter {
     try {
       this.driver = new webdriver.Builder()
         .forBrowser('phantomjs')
+        // .forBrowser('chrome')
         .build()
+      this.driver.manage().window().setSize(1920, 1080)
     } catch (error) {
       console.log(error)
     }
