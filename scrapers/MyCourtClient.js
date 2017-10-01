@@ -100,8 +100,34 @@ module.exports = class MyCourtClient extends EventEmitter {
       const number = $('div', columnHeader).html().replace(/\D/g, '')
       return number || columnId
     } catch (error) {
-      console.log('Could not parse court number from enskede day')
+      console.log('Could not parse court number from my court day')
       return 'unknown courtnumber'
+    }
+  }
+
+  getCourtInfo(club, court) {
+    try {
+      const result = {
+        surface: 'hardcourt',
+        type: 'inomhus',
+        court
+      }
+      Object.keys(club.courts).forEach(courtGroupKey => {
+        const startCourt = Number(courtGroupKey.split('-')[0])
+        const endCourt = Number(courtGroupKey.split('-')[1])
+        if (court >= startCourt && court <= endCourt) {
+          result.surface = club.courts[courtGroupKey].surface
+          result.type = club.courts[courtGroupKey].type
+        }
+      })
+      return result
+    } catch (error) {
+      console.log('Could not parse court number from my court day')
+      return {
+        surface: 'hardcourt',
+        type: 'inomhus',
+        court
+      }
     }
   }
 
@@ -126,11 +152,12 @@ module.exports = class MyCourtClient extends EventEmitter {
           startTime = time.split('-')[0],
           endTime = time.split('-')[1],
           court = self.parseCourtNumber(element, $),
+          courtInfo = self.getCourtInfo(club, court),
           key = startTime + '-' + endTime + '-' + court
 
         if (!day.hasOwnProperty(key)) {
           const timeSlot = new TimeSlot(Number(startTime), Number(endTime))
-          day[key] = new Slot(club.id, club.name, timestamp, timeSlot, court, 'hardcourt', 0, club.bookingUrl)
+          day[key] = new Slot(club.id, club.name, timestamp, timeSlot, court, courtInfo.surface, 0, club.bookingUrl, courtInfo.type)
         }
       })
 

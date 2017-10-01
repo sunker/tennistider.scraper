@@ -6,6 +6,7 @@ const MyCourtClient = require('./scrapers/MyCourtClient')
 const config = require('./config.json')
 const settings = require('./settings')
 const Helper = require('./scrapers/helper')
+const rp = require('request-promise')
 
 module.exports = {
   init() {
@@ -33,16 +34,6 @@ module.exports = {
       console.log(`${foundSlots} slots (${savedSlots} new) found at ${clubName}`)
     })
 
-    const matchiClubs = config.endpoints.matchi.filter(x => x.include)
-    matchiClubs.forEach(club => {
-      const delay = { minDelay: settings.matchiMinDelay * matchiClubs.length, maxDelay: settings.matchiMaxDelay * matchiClubs.length }
-      const matchiClient = new MatchiClient(club, delay)
-      setTimeout(() => matchiClient.init(), Helper.randomIntFromInterval(settings.matchiMinDelay, settings.matchiMaxDelay))
-      matchiClient.on('slotsLoaded', (res) => {
-        console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at ${club.name}`)
-      })
-    })
-
     const matchiPadelClubs = config.endpoints.matchiPadel.filter(x => x.include)
     matchiPadelClubs.forEach(club => {
       const delay = { minDelay: settings.matchiPadelMinDelay * matchiPadelClubs.length, maxDelay: settings.matchiPadelMaxDelay * matchiPadelClubs.length }
@@ -50,6 +41,20 @@ module.exports = {
       setTimeout(() => matchiPadelClient.init(), Helper.randomIntFromInterval(settings.matchiPadelMinDelay, settings.matchiPadelMaxDelay))
       matchiPadelClient.on('slotsLoaded', (res) => {
         console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at ${club.name}`)
+      })
+    })
+
+    this.repeatMatchi()
+  },
+  async repeatMatchi() {
+    const matchiClubs = await rp({uri: `${process.env.API_HOST}/api/club/list-current`, json: true}).then(clubs => clubs.filter(club => club.tag === 'matchi'))
+    matchiClubs.forEach(club => {
+      const delay = { minDelay: settings.matchiMinDelay * matchiClubs.length, maxDelay: settings.matchiMaxDelay * matchiClubs.length }
+      const matchiClient = new MatchiClient(club, delay)
+      setTimeout(() => matchiClient.init(), Helper.randomIntFromInterval(settings.matchiMinDelay, settings.matchiMaxDelay))
+      matchiClient.on('slotsLoaded', (res) => {
+        console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at ${club.name}`)
+        this.repeatMatchi()
       })
     })
   }

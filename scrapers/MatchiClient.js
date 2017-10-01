@@ -10,11 +10,7 @@ module.exports = class MatchiClient extends EventEmitter {
     Object.assign(this, delay)
   }
 
-  init() {
-    this.repeater()
-  }
-
-  async repeater() {
+  async init() {
     const days = Helper.getUrlsForNoOfDaysAhead(this.club.url, this.club.daysAhead, this.club.name, this.club.id)
 
     const context = {
@@ -28,7 +24,6 @@ module.exports = class MatchiClient extends EventEmitter {
     const savedSlots = await Promise.all(slots.map(slot => Helper.saveSlot(slot.slotKey, slot._date, slot.timeSlot.startTime, slot.timeSlot.endTime, slot.clubId, slot.clubName, slot.price, slot.courtNumber, slot.surface, slot.link)))
     this.emit('slotsLoaded',
       Object.assign({}, { slots }, { foundSlots: slots.length }, { savedSlots: savedSlots.filter(x => x).length }))
-    this.repeater()
   }
 
   async parse(targetDay, club) {

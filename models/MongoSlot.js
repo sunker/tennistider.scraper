@@ -21,7 +21,8 @@ const slotSchema = new Schema({
   price: Number,
   courtNumber: Number,
   surface: String,
-  link: String
+  link: String,
+  type: String
 })
 
 const slotModel = mongoose.model('slot', slotSchema)

@@ -67,7 +67,7 @@ module.exports = class Helper {
     return targets
   }
 
-  static async saveSlot(key, date, startTime, endTime, clubId, clubName, price, courtNumber, surface, link) {
+  static async saveSlot(key, date, startTime, endTime, clubId, clubName, price, courtNumber, surface, link, type) {
     const slot = new Slot({
       key,
       date,
@@ -78,7 +78,8 @@ module.exports = class Helper {
       price,
       courtNumber,
       surface,
-      link
+      link,
+      type
     })
     return new Promise(resolve => {
       Slots.findOne({ key: slot.key }, (err, docs) => {
