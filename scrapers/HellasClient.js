@@ -1,11 +1,9 @@
-const config = require('../config.json'),
-  settings = require('../settings'),
+const settings = require('../settings'),
   Slot = require('../models/Slot.js'),
   EventEmitter = require('events').EventEmitter,
   Helper = require('./helper.js'),
-  selectors = require('../config.json').endpoints.hellas.selectors,
-  club = require('../config.json').endpoints.hellas,
-  TimeSlot = require('../models/TimeSlot')
+  TimeSlot = require('../models/TimeSlot'),
+  rp = require('request-promise')
 
 module.exports = class HellasClient extends EventEmitter {
   init() {
@@ -13,10 +11,11 @@ module.exports = class HellasClient extends EventEmitter {
   }
 
   async repeater() {
-    let days = Helper.getUrlsForNoOfDaysAhead(config.endpoints.hellas.url, config.endpoints.hellas.daysAhead, config.endpoints.hellas.name)
+    const club = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs => clubs.find(club => club.tag === 'hellas'))
+    let days = Helper.getUrlsForNoOfDaysAhead(club.url, club.daysAhead, club.name)
     const context = {
       days,
-      club: config.endpoints.hellas,
+      club,
       minDelay: settings.hellasMinDelay,
       maxDelay: settings.hellasMaxDelay,
       scraperCallback: this.parse
@@ -28,17 +27,17 @@ module.exports = class HellasClient extends EventEmitter {
     this.repeater()
   }
 
-  async parse(targetDay) {
+  async parse(targetDay, club) {
     try {
       const $ = await Helper.getUrl(targetDay.url)
       let day = {}
-      $(selectors.root).filter(function () {
+      $(club.selectors.root).filter(function () {
         const element = $(this)
-        const time = $(selectors.time, element).html()
+        const time = $(club.selectors.time, element).html()
         element.children().each((columnIndex, activitySelctor) => {
-          const activityValue = $(selectors.activity, activitySelctor).html()
+          const activityValue = $(club.selectors.activity, activitySelctor).html()
           if (activityValue && activityValue.toLowerCase() === 'boka') {
-            const court = $(selectors.court.replace('[columnIndex]', columnIndex + 1)).html(),
+            const court = $(club.selectors.court.replace('[columnIndex]', columnIndex + 1)).html(),
               startTime = time.split('-')[0],
               endTime = time.split('-')[1],
               key = time + '-' + court,

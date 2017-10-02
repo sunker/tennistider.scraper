@@ -1,5 +1,4 @@
-const config = require('../config.json'),
-  settings = require('../settings'),
+const settings = require('../settings'),
   Slot = require('../models/Slot.js'),
   EventEmitter = require('events').EventEmitter,
   Helper = require('./helper.js'),
@@ -20,7 +19,7 @@ module.exports = class EnskedeClient extends EventEmitter {
     const club = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs => clubs.find(club => club.tag === 'enskede'))
     const url = await this.loadSessionUrl(club)
     const dayButtons = await this.openSession(club, url)
-    const targets = this.getTargets(config.endpoints.enskede.daysAhead, dayButtons)
+    const targets = this.getTargets(club.daysAhead, dayButtons)
     const context = {
       days: targets,
       club,

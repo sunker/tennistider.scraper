@@ -3,7 +3,6 @@ const MatchiClient = require('./scrapers/MatchiClient')
 const MatchiPadelClient = require('./scrapers/MatchiPadelClient')
 const EnskedeClient = require('./scrapers/EnskedeClient')
 const MyCourtClient = require('./scrapers/MyCourtClient')
-const config = require('./config.json')
 const settings = require('./settings')
 const Helper = require('./scrapers/helper')
 const rp = require('request-promise')
@@ -11,17 +10,13 @@ const rp = require('request-promise')
 module.exports = {
   init() {
     const hellasClient = new HellasClient()
-    if (config.endpoints.hellas.include) {
-      hellasClient.init()
-    }
+    hellasClient.init()
     hellasClient.on('slotsLoaded', (res) => {
       console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at Hellas TK`)
     })
 
     const enskedeClient = new EnskedeClient()
-    if (config.endpoints.enskede.include) {
-      enskedeClient.init()
-    }
+    enskedeClient.init()
     enskedeClient.on('slotsLoaded', (res) => {
       console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at Enskede`)
     })

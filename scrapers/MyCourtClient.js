@@ -1,11 +1,9 @@
-const config = require('../config.json'),
-  settings = require('../settings'),
+const settings = require('../settings'),
   Slot = require('../models/Slot.js'),
   EventEmitter = require('events').EventEmitter,
   Helper = require('./helper.js'),
   cheerio = require('cheerio'),
   moment = require('moment'),
-  club = require('../config.json').endpoints.myCourt,
   webdriver = require('selenium-webdriver'),
   until = webdriver.until,
   TimeSlot = require('../models/TimeSlot'),
@@ -18,7 +16,7 @@ module.exports = class MyCourtClient extends EventEmitter {
   }
 
   async repeater() {
-    this.logIn(config.endpoints.myCourt.loginUrl).then(async() => {
+    this.logIn('http://www.mycourt.se/index.php').then(async() => {
       const clubs = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs => clubs.filter(club => club.tag === 'mycourt'))
       this.scrapeClubsRecursively(clubs).then((slots) => {
         this.repeater()
@@ -60,7 +58,7 @@ module.exports = class MyCourtClient extends EventEmitter {
 
   async openClubPage(clubId) {
     return new Promise((resolve, reject) => {
-      this.driver.get(club.startPage).then(() => {
+      this.driver.get('http://www.mycourt.se/your_clubs.php').then(() => {
         setTimeout(() => {
           this.driver.executeScript('go_to_club(' + clubId + ',"sp",0)').then(() => {
             setTimeout(() => resolve(), 1000)
@@ -232,13 +230,13 @@ module.exports = class MyCourtClient extends EventEmitter {
   async logIn(url) {
     return new Promise((resolve, reject) => {
       this.driver.get(url).then(async() => {
-        const elements = await this.driver.findElements(webdriver.By.className(club.loginClasSelector)) // .then((elements) => {
+        const elements = await this.driver.findElements(webdriver.By.className('button small-button signin-button')) // .then((elements) => {
         if (elements.length > 0) {
           elements[0].click().then(() => {
             this.driver.wait(until.elementLocated(webdriver.By.id('email')), 3000).then(() => {
               setTimeout(async() => {
-                this.driver.findElement(webdriver.By.id('email')).sendKeys(club.email)
-                this.driver.findElement(webdriver.By.id('password')).sendKeys(club.password)
+                this.driver.findElement(webdriver.By.id('email')).sendKeys(process.env.MAIL_ADDRESS)
+                this.driver.findElement(webdriver.By.id('password')).sendKeys(process.env.MAIL_PASS)
                 const elems = await this.driver.findElements(webdriver.By.name('agree_terms_conditions'))
                 elems.forEach((element) => {
                   var elem = element
