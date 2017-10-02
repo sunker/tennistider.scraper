@@ -51,7 +51,6 @@ module.exports = class HellasClient extends EventEmitter {
               const courtNumber = Number(court.toLowerCase().replace('bana', '').trim())
               const timeSlot = new TimeSlot(Number(startTime.replace(':', '.')), Number(endTime.replace(':', '.')))
               day[key] = new Slot(club.id, club.name, targetDay.timestamp, timeSlot, courtNumber, courtNumber > 6 ? 'grus' : 'hardcourt', 0, url.replace(/&amp;/g, '&'))
-              console.log(day[key].slotKey)
             }
           }
         })

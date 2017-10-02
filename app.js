@@ -1,10 +1,10 @@
 require('dotenv').config()
+require('./models/MongoSlot')
 const Koa = require('koa'),
   Router = require('koa-router'),
   koaErrorhandler = require('./middleware/errorHandler'),
   koaHealth = require('./middleware/health'),
   mongoose = require('mongoose'),
-  a = require('./models/MongoSlot'),
   listener = require('./listener'),
   app = new Koa(),
   router = new Router()
