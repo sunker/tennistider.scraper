@@ -263,7 +263,7 @@ module.exports = class MyCourtClient extends EventEmitter {
           })
         } else {
           // Already logged in
-          this.driver.get(club.startPage).then(() => {
+          this.driver.get('http://www.mycourt.se/index.php').then(() => {
             resolve()
           })
         }
