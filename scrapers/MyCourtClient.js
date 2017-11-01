@@ -16,7 +16,7 @@ module.exports = class MyCourtClient extends EventEmitter {
   }
 
   async repeater() {
-    this.logIn('http://www.mycourt.se/index.php').then(async() => {
+    this.logIn('http://www.mycourt.se/index.php').then(async () => {
       const clubs = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs => clubs.filter(club => club.tag === 'mycourt'))
       this.scrapeClubsRecursively(clubs).then((slots) => {
         this.repeater()
@@ -28,7 +28,7 @@ module.exports = class MyCourtClient extends EventEmitter {
     return new Promise(resolve => {
       if (clubs.length > 0) {
         let target = clubs.shift()
-        return this.openClubPage(target.myCourtClubId).then(async() => {
+        return this.openClubPage(target.myCourtClubId).then(async () => {
           try {
             const targets = await this.getAllTargets()
             const context = {
@@ -40,9 +40,6 @@ module.exports = class MyCourtClient extends EventEmitter {
               self: this
             }
             const daySlots = await Helper.slotRequestScheduler(context)
-            const savedSlots = await Promise.all(daySlots.map(slot => Helper.saveSlot(slot.slotKey, slot._date, slot.timeSlot.startTime, slot.timeSlot.endTime, slot.clubId, slot.clubName, slot.price, slot.courtNumber, slot.surface, slot.link)))
-            this.emit('slotsLoaded',
-              Object.assign({}, { foundSlots: daySlots.length }, { savedSlots: savedSlots.filter(x => x).length }, { clubName: target.name }))
             slots = [...slots, ...daySlots]
             resolve(this.scrapeClubsRecursively(clubs, slots))
           } catch (error) {
@@ -63,13 +60,13 @@ module.exports = class MyCourtClient extends EventEmitter {
           this.driver.executeScript('go_to_club(' + clubId + ',"sp",0)').then(() => {
             setTimeout(() => resolve(), 1000)
           })
-        }, 1000)
+        }, 2000)
       })
     })
   }
 
   async scrapeDay(day, club, self) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let target
       try {
         target = await self.driver.findElement(webdriver.By.xpath("//div[@date='" + day.format1 + "']"))
@@ -161,32 +158,36 @@ module.exports = class MyCourtClient extends EventEmitter {
         }
       })
 
-      return Object.keys(day).map(key => day[key])
+      const slots = Object.keys(day).map(key => day[key])
+      return Helper.updateSlots(slots, club.id, timestamp)
     } catch (error) {
       console.log('There was an error scraping ' + this.url ? this.url : '')
     }
   }
 
   async clickNext() {
-    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_rgt.png']")).click()
+    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_rgt.png']")).click().catch(() =>
+      this.driver.findElement(webdriver.By.id('calender-next-week')).click()
+    ).catch(this.repeater())
   }
 
   async clickPrevious() {
-    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_lft.png']")).click()
+    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_lft.png']")).click().catch(() =>
+      this.driver.findElement(webdriver.By.id('calender-prev-week')).click()
+    ).catch(this.repeater())
   }
-
   async getAllTargets(elements = [], week = 3) {
     return new Promise(async resolve => {
       if (week !== 0) {
         const weekElements = await this.getElementsForWeek(week)
         return this.clickNext().then(() => {
           resolve(this.getAllTargets([...elements, ...weekElements], --week))
-        })
+        }, () => this.driver.findElement(webdriver.By.id('calender-next-week')).click())
       } else {
         return this.clickPrevious()
-          .then(() => this.clickPrevious()
-            .then(() => this.clickPrevious()
-              .then(() => resolve(elements.filter(x => this.dateInRange(x.timestamp))))))
+          .then(() => this.clickPrevious(), this.driver.findElement(webdriver.By.id('calender-prev-week')).click()
+            .then(() => this.clickPrevious(), this.driver.findElement(webdriver.By.id('calender-prev-week')).click()
+              .then(() => resolve(elements.filter(x => this.dateInRange(x.timestamp))), this.driver.findElement(webdriver.By.id('calender-prev-week')).click())))
       }
     })
   }
@@ -202,24 +203,38 @@ module.exports = class MyCourtClient extends EventEmitter {
   }
 
   async getElementsForWeek(week) {
-    const dayElements = await this.driver.findElements(webdriver.By.xpath('//div[@date]'))
+    // const dayElements = await this.driver.findElements(webdriver.By.xpath('//div[@date]'))
+    const dayElements = await this.driver.findElements(webdriver.By.className('date-cal'))
     return Promise.all(dayElements.map(async dayElement => {
-      const date = await dayElement.getAttribute('date')
-      const timestamp = date.indexOf('-') === 2 ? moment(date, 'DD-MM-YYYY').toDate() : moment(date, 'YYYY-MM-DD').toDate()
-      return {
-        week,
-        timestamp,
-        format1: moment(timestamp).format('DD-MM-YYYY'),
-        format2: moment(timestamp).format('YYYY-MM-DD')
+      try {
+        const date = await dayElement.getAttribute('date')
+        const timestamp = date.indexOf('-') === 2 ? moment(date, 'DD-MM-YYYY').toDate() : moment(date, 'YYYY-MM-DD').toDate()
+        return {
+          week,
+          timestamp,
+          format1: moment(timestamp).format('DD-MM-YYYY'),
+          format2: moment(timestamp).format('YYYY-MM-DD')
+        }
+      } catch (error) {
+        console.log(error)
+        return []
       }
     }))
   }
 
   initDriver() {
     try {
+      // this.driver = new webdriver.Builder()
+      //   //.forBrowser('phantomjs')
+      //   .forBrowser('chrome')
+      //   .build()
+      //   .catch((err) => {
+      //     console.log(err)
+      //     this.repeater()
+      //   })
       this.driver = new webdriver.Builder()
-        .forBrowser('phantomjs')
-        // .forBrowser('chrome')
+        //.forBrowser('phantomjs')
+        .forBrowser('chrome')
         .build()
       this.driver.manage().window().setSize(1920, 1080)
     } catch (error) {
@@ -229,12 +244,12 @@ module.exports = class MyCourtClient extends EventEmitter {
 
   async logIn(url) {
     return new Promise((resolve, reject) => {
-      this.driver.get(url).then(async() => {
+      this.driver.get(url).then(async () => {
         const elements = await this.driver.findElements(webdriver.By.className('button small-button signin-button')) // .then((elements) => {
         if (elements.length > 0) {
           elements[0].click().then(() => {
             this.driver.wait(until.elementLocated(webdriver.By.id('email')), 3000).then(() => {
-              setTimeout(async() => {
+              setTimeout(async () => {
                 this.driver.findElement(webdriver.By.id('email')).sendKeys(process.env.MAIL_ADDRESS)
                 this.driver.findElement(webdriver.By.id('password')).sendKeys(process.env.MAIL_PASS)
                 const elems = await this.driver.findElements(webdriver.By.name('agree_terms_conditions'))
@@ -246,7 +261,7 @@ module.exports = class MyCourtClient extends EventEmitter {
                     }
                   })
                 })
-                setTimeout(async() => {
+                setTimeout(async () => {
                   const elements = await this.driver.findElements(webdriver.By.className('button primary-button track-event'))
                   elements.forEach((element) => {
                     element.getAttribute('value').then((value) => {

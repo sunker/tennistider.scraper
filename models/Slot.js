@@ -1,5 +1,3 @@
-const TimeSlot = require('./TimeSlot')
-
 module.exports = class Slot {
   constructor(clubId, clubName, date, timeSlot, courtNumber, surface, price, link, type = 'inomhus') {
     this.clubId = clubId
@@ -11,6 +9,7 @@ module.exports = class Slot {
     this.surface = surface
     this.link = link
     this.type = type
+    this.key = this.slotKey
   }
 
   get date() {

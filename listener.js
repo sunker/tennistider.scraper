@@ -11,17 +11,11 @@ module.exports = {
   init() {
     const hellasClient = new HellasClient()
     hellasClient.init()
-    hellasClient.on('slotsLoaded', (res) => {
-      console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at Hellas TK`)
-    })
 
     const enskedeClient = new EnskedeClient()
     enskedeClient.init()
-    enskedeClient.on('slotsLoaded', (res) => {
-      console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at Enskede`)
-    })
 
-    this.initMycourt()
+    this.initMycourt() 
     this.repeatMatchi()
     this.repeatMatchiPadel()
   },

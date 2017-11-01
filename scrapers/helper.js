@@ -16,11 +16,11 @@ module.exports = class Helper {
       const { days, minDelay, maxDelay, scraperCallback, club, self } = ctx
       if (days.length > 0) {
         let day = days.shift()
-        setTimeout(async() => {
+        setTimeout(async () => {
           let daySlots = []
           try {
             daySlots = await scraperCallback(day, club, self)
-            console.log(`${club.name}: ${day.timestamp ? day.timestamp : day.url}: ${daySlots.length} slots found`)
+            console.log(`${club.name}: ${day.timestamp ? day.timestamp : day.url}: ${daySlots.length} new slot(s) found`)
             slots = [...slots, ...daySlots]
           } catch (error) {
             console.log('Could not scrape day', error)
@@ -65,6 +65,15 @@ module.exports = class Helper {
     }
 
     return targets
+  }
+
+  static async updateSlots(slots, clubId, date) {
+    const currentSlotsOfTheDay = await rp({ uri: `${process.env.API_HOST}/api/slot/filter`, qs: { clubId, date }, json: true })
+    const slotsToBeDeleted = currentSlotsOfTheDay.filter(x => slots.some(y => y.slotKey === x.key) === false)
+    if (slotsToBeDeleted.length > 0) {
+      rp({ uri: `${process.env.API_HOST}/api/slot/many`, method: 'DELETE', json: true, body: slotsToBeDeleted })
+    }
+    return rp({ uri: `${process.env.API_HOST}/api/slot/many`, method: 'POST', json: true, body: slots })
   }
 
   static async saveSlot(key, date, startTime, endTime, clubId, clubName, price, courtNumber, surface, link, type) {

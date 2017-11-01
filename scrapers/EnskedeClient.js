@@ -28,19 +28,19 @@ module.exports = class EnskedeClient extends EventEmitter {
       scraperCallback: this.scrapeDay,
       self: this
     }
-
-    const slots = await Helper.slotRequestScheduler(context)
-    const savedSlots = await Promise.all(slots.map(slot => Helper.saveSlot(slot.slotKey, slot._date, slot.timeSlot.startTime, slot.timeSlot.endTime, slot.clubId, slot.clubName, slot.price, slot.courtNumber, slot.surface, slot.link)))
-    this.emit('slotsLoaded',
-      Object.assign({}, { slots }, { foundSlots: slots.length }, { savedSlots: savedSlots.filter(x => x).length }))
-    this.repeater()
+    try {
+      const slots = await Helper.slotRequestScheduler(context)
+      this.repeater(slots)
+    } catch (error) {
+      this.repeater()
+    }
   }
 
   async scrapeDay(day, club, self) {
     return new Promise((resolve, reject) => {
       self.driver.findElement(webdriver.By.xpath("//option[@value='" + day.timestampFormatted + "']")).click().then(() => {
         self.driver.wait(until.elementLocated(webdriver.By.id(club.tableContainerSelectorId)), 3000).then(() => {
-          setTimeout(async() => {
+          setTimeout(async () => {
             try {
               const target = await self.driver.findElement(webdriver.By.id(club.tableContainerSelectorId))
               const html = await target.getAttribute('innerHTML')
@@ -50,6 +50,9 @@ module.exports = class EnskedeClient extends EventEmitter {
             }
           }, 1000)
         })
+      }, (err) => {
+        console.log(err)
+        resolve([])
       }).catch(err => {
         console.log(err)
         resolve([])
@@ -67,7 +70,7 @@ module.exports = class EnskedeClient extends EventEmitter {
     return surface
   }
 
-  parse($, target, self, club) {
+  async parse($, target, self, club) {
     try {
       let day = {}
       const me = self
@@ -87,8 +90,8 @@ module.exports = class EnskedeClient extends EventEmitter {
           day[key] = new Slot(club.id, club.name, date, timeSlot, courtNumber, surface, 0, club.bookingUrl)
         }
       })
-
-      return Object.keys(day).map(key => day[key])
+      const slots = Object.keys(day).map(key => day[key])
+      return await Helper.updateSlots(slots, club.id, club.date)
     } catch (error) {
       console.log('There was an error scraping ' + this.url ? this.url : '')
     }
@@ -136,6 +139,7 @@ module.exports = class EnskedeClient extends EventEmitter {
     try {
       this.driver = new webdriver.Builder()
         .forBrowser('phantomjs')
+        // .forBrowser('chrome')
         .build()
     } catch (error) {
       console.log(error)
@@ -157,10 +161,16 @@ module.exports = class EnskedeClient extends EventEmitter {
           this.driver.findElement(webdriver.By.id(club.tennisButtonSelectorId)).click().then(() => {
             this.driver.wait(until.elementLocated(webdriver.By.id(club.tableContainerSelectorId)), 2000).then(() => {
               resolve()
-            }).catch(err => console.log(err))
-          })
-        })
-      })
+            }, (err) => {
+              console.log(err)
+              resolve(this.openSession(club, url))
+            }).catch(err => {
+              console.log(err)
+              resolve(this.openSession(club, url))
+            })
+          }, () => resolve(this.openSession(club, url)))
+        }, () => resolve(this.openSession(club, url)))
+      }, () => resolve(this.openSession(club, url)))
     })
   }
 }

@@ -2,6 +2,7 @@ require('dotenv').config()
 require('./models/MongoSlot')
 const Koa = require('koa'),
   Router = require('koa-router'),
+  bodyparser = require('koa-bodyparser'),
   koaErrorhandler = require('./middleware/errorHandler'),
   koaHealth = require('./middleware/health'),
   mongoose = require('mongoose'),
@@ -11,6 +12,7 @@ const Koa = require('koa'),
 
 console.log('process.env.NODE_ENV', process.env.NODE_ENV)
 
+app.use(bodyparser())
 app.use(koaHealth)
 app.use(koaErrorhandler)
 

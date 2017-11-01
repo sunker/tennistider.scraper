@@ -21,9 +21,8 @@ module.exports = class MatchiClient extends EventEmitter {
       scraperCallback: this.parse
     }
     const slots = await Helper.slotRequestScheduler(context)
-    const savedSlots = await Promise.all(slots.map(slot => Helper.saveSlot(slot.slotKey, slot._date, slot.timeSlot.startTime, slot.timeSlot.endTime, slot.clubId, slot.clubName, slot.price, slot.courtNumber, slot.surface, slot.link)))
     this.emit('slotsLoaded',
-      Object.assign({}, { slots }, { foundSlots: slots.length }, { savedSlots: savedSlots.filter(x => x).length }))
+      Object.assign({}, { slots }, { foundSlots: slots.length }, { savedSlots: slots.length }))
   }
 
   async parse(targetDay, club) {
@@ -45,8 +44,9 @@ module.exports = class MatchiClient extends EventEmitter {
           day[key] = new Slot(club.id, club.name, targetDay.timestamp, timeSlot, courtNumber, courtNumber > 5 ? 'grus' : 'hardcourt', 0, club.url)
         }
       })
-
-      return Object.keys(day).map(key => day[key])
+      
+      const slots = Object.keys(day).map(key => day[key])
+      return Helper.updateSlots(slots, club.id, targetDay.timestamp)
     } catch (error) {
       console.log('There was an error scraping ' + this.url ? this.url : '')
     }

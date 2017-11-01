@@ -12,7 +12,7 @@ module.exports = class HellasClient extends EventEmitter {
 
   async repeater() {
     const club = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs => clubs.find(club => club.tag === 'hellas'))
-    let days = Helper.getUrlsForNoOfDaysAhead(club.url, club.daysAhead, club.name)
+    let days = Helper.getUrlsForNoOfDaysAhead(club.url, club.daysAhead, club.name, club.id)
     const context = {
       days,
       club,
@@ -20,11 +20,9 @@ module.exports = class HellasClient extends EventEmitter {
       maxDelay: settings.hellasMaxDelay,
       scraperCallback: this.parse
     }
+    
     const slots = await Helper.slotRequestScheduler(context)
-    const savedSlots = await Promise.all(slots.map(slot => Helper.saveSlot(slot.slotKey, slot._date, slot.timeSlot.startTime, slot.timeSlot.endTime, slot.clubId, slot.clubName, slot.price, slot.courtNumber, slot.surface, slot.link)))
-    this.emit('slotsLoaded',
-      Object.assign({}, { slots }, { foundSlots: slots.length }, { savedSlots: savedSlots.filter(x => x).length }))
-    this.repeater()
+    this.repeater(slots)
   }
 
   async parse(targetDay, club) {
@@ -55,9 +53,17 @@ module.exports = class HellasClient extends EventEmitter {
         })
       })
 
-      return Object.keys(day).map(key => day[key])
+      const slots = Object.keys(day).map(key => day[key])
+      try {
+        const newSlots = await Helper.updateSlots(slots, club.id, targetDay.timestamp)
+        return newSlots
+
+      } catch (error) {
+        console.log(error)
+
+      }
     } catch (error) {
-      console.log('There was an error scraping ' + this.url ? this.url : '')
+      console.log('There was an error scraping ' + club.name, error)
     }
   }
 }
