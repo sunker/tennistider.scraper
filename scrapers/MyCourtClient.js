@@ -139,7 +139,7 @@ module.exports = class MyCourtClient extends EventEmitter {
     }
   }
 
-  parse($, club, self, { timestamp }) {
+  async parse($, club, self, { timestamp }) {
     try {
       let day = {}
       $('td.active ').each(function () {
@@ -159,36 +159,32 @@ module.exports = class MyCourtClient extends EventEmitter {
       })
 
       const slots = Object.keys(day).map(key => day[key])
-      return Helper.updateSlots(slots, club.id, timestamp)
+      return await Helper.updateSlots(slots, club.id, timestamp)
     } catch (error) {
       console.log('There was an error scraping ' + this.url ? this.url : '')
     }
   }
 
   async clickNext() {
-    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_rgt.png']")).click().catch(() =>
-      this.driver.findElement(webdriver.By.id('calender-next-week')).click()
-    ).catch(this.repeater())
+    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_rgt.png']")).click()
   }
 
   async clickPrevious() {
-    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_lft.png']")).click().catch(() =>
-      this.driver.findElement(webdriver.By.id('calender-prev-week')).click()
-    ).catch(this.repeater())
+    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_lft.png']")).click()
   }
-  
+
   async getAllTargets(elements = [], week = 3) {
     return new Promise(async resolve => {
       if (week !== 0) {
         const weekElements = await this.getElementsForWeek(week)
         return this.clickNext().then(() => {
           resolve(this.getAllTargets([...elements, ...weekElements], --week))
-        }, () => this.driver.findElement(webdriver.By.id('calender-next-week')).click())
+        })
       } else {
         return this.clickPrevious()
-          .then(() => this.clickPrevious(), this.driver.findElement(webdriver.By.id('calender-prev-week')).click()
-            .then(() => this.clickPrevious(), this.driver.findElement(webdriver.By.id('calender-prev-week')).click()
-              .then(() => resolve(elements.filter(x => this.dateInRange(x.timestamp))), this.driver.findElement(webdriver.By.id('calender-prev-week')).click())))
+          .then(() => this.clickPrevious()
+            .then(() => this.clickPrevious()
+              .then(() => resolve(elements.filter(x => this.dateInRange(x.timestamp))))))
       }
     })
   }
@@ -203,38 +199,24 @@ module.exports = class MyCourtClient extends EventEmitter {
   }
 
   async getElementsForWeek(week) {
-    // const dayElements = await this.driver.findElements(webdriver.By.xpath('//div[@date]'))
-    const dayElements = await this.driver.findElements(webdriver.By.className('date-cal'))
+    const dayElements = await this.driver.findElements(webdriver.By.xpath('//div[@date]'))
     return Promise.all(dayElements.map(async dayElement => {
-      try {
-        const date = await dayElement.getAttribute('date')
-        const timestamp = date.indexOf('-') === 2 ? moment(date, 'DD-MM-YYYY').toDate() : moment(date, 'YYYY-MM-DD').toDate()
-        return {
-          week,
-          timestamp,
-          format1: moment(timestamp).format('DD-MM-YYYY'),
-          format2: moment(timestamp).format('YYYY-MM-DD')
-        }
-      } catch (error) {
-        console.log(error)
-        return []
+      const date = await dayElement.getAttribute('date')
+      const timestamp = date.indexOf('-') === 2 ? moment(date, 'DD-MM-YYYY').toDate() : moment(date, 'YYYY-MM-DD').toDate()
+      return {
+        week,
+        timestamp,
+        format1: moment(timestamp).format('DD-MM-YYYY'),
+        format2: moment(timestamp).format('YYYY-MM-DD')
       }
     }))
   }
 
   initDriver() {
     try {
-      // this.driver = new webdriver.Builder()
-      //   //.forBrowser('phantomjs')
-      //   .forBrowser('chrome')
-      //   .build()
-      //   .catch((err) => {
-      //     console.log(err)
-      //     this.repeater()
-      //   })
       this.driver = new webdriver.Builder()
-        //.forBrowser('phantomjs')
-        .forBrowser('chrome')
+        .forBrowser('phantomjs')
+        // .forBrowser('chrome')
         .build()
       this.driver.manage().window().setSize(1920, 1080)
     } catch (error) {

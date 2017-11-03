@@ -15,7 +15,7 @@ module.exports = {
     const enskedeClient = new EnskedeClient()
     enskedeClient.init()
 
-    this.initMycourt() 
+    this.initMycourt()
     this.repeatMatchi()
     this.repeatMatchiPadel()
   },
