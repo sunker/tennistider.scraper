@@ -176,6 +176,7 @@ module.exports = class MyCourtClient extends EventEmitter {
       this.driver.findElement(webdriver.By.id('calender-prev-week')).click()
     ).catch(this.repeater())
   }
+  
   async getAllTargets(elements = [], week = 3) {
     return new Promise(async resolve => {
       if (week !== 0) {
@@ -198,8 +199,7 @@ module.exports = class MyCourtClient extends EventEmitter {
     today.setDate(today.getDate() + -1)
     lastDate.setDate(lastDate.getDate() + 13)
 
-    const a = date.getTime() >= today.getTime() && date.getTime() <= lastDate.getTime()
-    return a
+    return date.getTime() >= today.getTime() && date.getTime() <= lastDate.getTime()
   }
 
   async getElementsForWeek(week) {
