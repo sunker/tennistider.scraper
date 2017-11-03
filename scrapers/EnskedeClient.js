@@ -161,13 +161,7 @@ module.exports = class EnskedeClient extends EventEmitter {
           this.driver.findElement(webdriver.By.id(club.tennisButtonSelectorId)).click().then(() => {
             this.driver.wait(until.elementLocated(webdriver.By.id(club.tableContainerSelectorId)), 2000).then(() => {
               resolve()
-            }, (err) => {
-              console.log(err)
-              resolve(this.openSession(club, url))
-            }).catch(err => {
-              console.log(err)
-              resolve(this.openSession(club, url))
-            })
+            }, () => resolve(this.openSession(club, url))).catch(() => resolve(this.openSession(club, url)))
           }, () => resolve(this.openSession(club, url)))
         }, () => resolve(this.openSession(club, url)))
       }, () => resolve(this.openSession(club, url)))
