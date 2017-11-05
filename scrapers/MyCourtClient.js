@@ -174,7 +174,7 @@ module.exports = class MyCourtClient extends EventEmitter {
 
   async clickNext() {
     try {
-      return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_rgt.png']"), console.log).click().catch(console.log)
+      return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_rgt.png']"), this.scheduleRestart).click().catch(this.scheduleRestart)
     } catch (error) {
       this.scheduleRestart(error)
     }
