@@ -221,6 +221,7 @@ module.exports = class MyCourtClient extends EventEmitter {
       this.driver.manage().window().setSize(1920, 1080)
     } catch (error) {
       console.log(error)
+      process.exit(1)
     }
   }
 

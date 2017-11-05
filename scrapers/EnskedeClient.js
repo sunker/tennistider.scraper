@@ -143,6 +143,7 @@ module.exports = class EnskedeClient extends EventEmitter {
         .build()
     } catch (error) {
       console.log(error)
+      process.exit(1)
     }
   };
 
