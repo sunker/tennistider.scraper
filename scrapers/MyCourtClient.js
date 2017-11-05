@@ -165,8 +165,19 @@ module.exports = class MyCourtClient extends EventEmitter {
     }
   }
 
+  scheduleRestart(error = '', time = 1800000) {
+    setTimeout(() => {
+      console.log(`Scheduled restart after error: ${error}`)
+      process.exit(1)
+    }, time)
+  }
+
   async clickNext() {
-    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_rgt.png']")).click()
+    try {
+      return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_rgt.png']"), console.log).click().catch(console.log)
+    } catch (error) {
+      this.scheduleRestart(error)
+    }
   }
 
   async clickPrevious() {
@@ -216,7 +227,7 @@ module.exports = class MyCourtClient extends EventEmitter {
     try {
       this.driver = new webdriver.Builder()
         .forBrowser('phantomjs')
-        // .forBrowser('chrome')
+        //.forBrowser('chrome')
         .build()
       this.driver.manage().window().setSize(1920, 1080)
     } catch (error) {
