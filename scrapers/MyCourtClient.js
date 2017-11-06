@@ -181,7 +181,11 @@ module.exports = class MyCourtClient extends EventEmitter {
   }
 
   async clickPrevious() {
-    return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_lft.png']")).click()
+    try {
+      return this.driver.findElement(webdriver.By.xpath("//*[@src='images/arrow_lft.png']")).click()
+    } catch (error) {
+      this.scheduleRestart(error)
+    }
   }
 
   async getAllTargets(elements = [], week = 3) {
