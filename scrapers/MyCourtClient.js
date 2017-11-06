@@ -43,7 +43,7 @@ module.exports = class MyCourtClient extends EventEmitter {
             slots = [...slots, ...daySlots]
             resolve(this.scrapeClubsRecursively(clubs, slots))
           } catch (error) {
-            console.log(`There was an error scraping ${target.name}: ${error}`)
+            console.error(`There was an error scraping ${target.name}: ${error}`)
             return this.scrapeClubsRecursively({ clubs }, slots)
           }
         })
@@ -97,7 +97,7 @@ module.exports = class MyCourtClient extends EventEmitter {
       const number = $('div', columnHeader).html().replace(/\D/g, '')
       return number || columnId
     } catch (error) {
-      console.log('Could not parse court number from my court day')
+      console.error('Could not parse court number from my court day')
       return 'unknown courtnumber'
     }
   }
@@ -119,7 +119,7 @@ module.exports = class MyCourtClient extends EventEmitter {
       })
       return result
     } catch (error) {
-      console.log('Could not parse court number from my court day')
+      console.error('Could not parse court number from my court day')
       return {
         surface: 'hardcourt',
         type: 'inomhus',
@@ -134,7 +134,7 @@ module.exports = class MyCourtClient extends EventEmitter {
       const start = href.indexOf('DATEHR=') + 'DATEHR='.length
       return href.substring(start, start + 10)
     } catch (error) {
-      console.log('Could not parse date from enskede day')
+      console.error('Could not parse date from enskede day')
       return 'unknown date'
     }
   }
@@ -161,13 +161,13 @@ module.exports = class MyCourtClient extends EventEmitter {
       const slots = Object.keys(day).map(key => day[key])
       return await Helper.updateSlots(slots, club.id, timestamp)
     } catch (error) {
-      console.log('There was an error scraping ' + this.url ? this.url : '')
+      console.error('There was an error scraping ' + this.url ? this.url : '')
     }
   }
 
   scheduleRestart(error = '', time = 1800000) {
     setTimeout(() => {
-      console.log(`Scheduled restart after error: ${error}`)
+      console.error(`------- Scheduled restart after error: ${error}`)
       process.exit(1)
     }, time)
   }
@@ -235,7 +235,7 @@ module.exports = class MyCourtClient extends EventEmitter {
         .build()
       this.driver.manage().window().setSize(1920, 1080)
     } catch (error) {
-      console.log(error)
+      console.error(error)
       process.exit(1)
     }
   }

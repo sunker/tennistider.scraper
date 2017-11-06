@@ -54,16 +54,10 @@ module.exports = class HellasClient extends EventEmitter {
       })
 
       const slots = Object.keys(day).map(key => day[key])
-      try {
-        const newSlots = await Helper.updateSlots(slots, club.id, targetDay.timestamp)
-        return newSlots
-
-      } catch (error) {
-        console.log(error)
-
-      }
+      const newSlots = await Helper.updateSlots(slots, club.id, targetDay.timestamp)
+      return newSlots
     } catch (error) {
-      console.log('There was an error scraping ' + club.name, error)
+      console.error('There was an error scraping ' + club.name, error)
     }
   }
 }

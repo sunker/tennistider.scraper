@@ -46,7 +46,7 @@ module.exports = class MatchiPadelClient extends EventEmitter {
       const slots = Object.keys(day).map(key => day[key])
       return Helper.updateSlots(slots, club.id, targetDay.timestamp)
     } catch (error) {
-      console.log('There was an error scraping ' + club.url, error)
+      console.error('There was an error scraping ' + club.url, error)
     }
   }
 }

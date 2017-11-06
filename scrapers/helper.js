@@ -23,7 +23,7 @@ module.exports = class Helper {
             console.log(`${club.name}: ${day.timestamp ? day.timestamp : day.url}: ${daySlots.length} new slot(s) found`)
             slots = [...slots, ...daySlots]
           } catch (error) {
-            console.log('Could not scrape day', error)
+            console.error('Could not scrape day', error)
           }
           resolve(Helper.slotRequestScheduler(ctx, slots))
         }, Helper.randomIntFromInterval(minDelay, maxDelay))
@@ -98,7 +98,7 @@ module.exports = class Helper {
           slot.save(function (err) {
             if (err) {
               if (err.code !== 11000) {
-                console.log(err)
+                console.error(err)
               }
               resolve(false)
             } else {

@@ -51,10 +51,10 @@ module.exports = class EnskedeClient extends EventEmitter {
           }, 1000)
         })
       }, (err) => {
-        console.log(err)
+        console.error(err)
         resolve([])
       }).catch(err => {
-        console.log(err)
+        console.error(err)
         resolve([])
       })
     })
@@ -93,7 +93,7 @@ module.exports = class EnskedeClient extends EventEmitter {
       const slots = Object.keys(day).map(key => day[key])
       return await Helper.updateSlots(slots, club.id, club.date)
     } catch (error) {
-      console.log('There was an error scraping ' + this.url ? this.url : '')
+      console.error('There was an error scraping ' + this.url ? this.url : '')
     }
   }
 
@@ -115,7 +115,7 @@ module.exports = class EnskedeClient extends EventEmitter {
       const start = href.indexOf('DATEHR=') + 'DATEHR='.length
       return new Date(href.substring(start, start + 10))
     } catch (error) {
-      console.log('Could not parse date from enskede day')
+      console.error('Could not parse date from enskede day')
       return 'unknown date'
     }
   }
@@ -142,7 +142,7 @@ module.exports = class EnskedeClient extends EventEmitter {
         // .forBrowser('chrome')
         .build()
     } catch (error) {
-      console.log(error)
+      console.error(error)
       process.exit(1)
     }
   };
