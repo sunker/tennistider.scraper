@@ -9,12 +9,11 @@ const rp = require('request-promise')
 
 module.exports = {
   init() {
+    // const enskedeClient = new EnskedeClient()
+    // enskedeClient.init()
+
     const hellasClient = new HellasClient()
     hellasClient.init()
-
-    const enskedeClient = new EnskedeClient()
-    enskedeClient.init()
-
     this.initMycourt()
     this.repeatMatchi()
     this.repeatMatchiPadel()
@@ -27,31 +26,53 @@ module.exports = {
     })
   },
   async repeatMatchi() {
-    const matchiClubs = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs => clubs.filter(club => club.tag === 'matchi'))
-    Promise.all(matchiClubs.map(club => {
-      return new Promise((resolve) => {
-        const delay = { minDelay: settings.matchiMinDelay * matchiClubs.length, maxDelay: settings.matchiMaxDelay * matchiClubs.length }
-        const matchiClient = new MatchiClient(club, delay)
-        setTimeout(() => matchiClient.init(), Helper.randomIntFromInterval(settings.matchiMinDelay, settings.matchiMaxDelay))
-        matchiClient.on('slotsLoaded', (res) => {
-          console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at ${club.name}`)
-          resolve()
+    const matchiClubs = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs =>
+      clubs.filter(club => club.tag === 'matchi')
+    )
+    Promise.all(
+      matchiClubs.map(club => {
+        return new Promise(resolve => {
+          const delay = {
+            minDelay: settings.matchiMinDelay * matchiClubs.length,
+            maxDelay: settings.matchiMaxDelay * matchiClubs.length
+          }
+          const matchiClient = new MatchiClient(club, delay)
+          setTimeout(
+            () => matchiClient.init(),
+            Helper.randomIntFromInterval(settings.matchiMinDelay, settings.matchiMaxDelay)
+          )
+          matchiClient.on('slotsLoaded', res => {
+            console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at ${club.name}`)
+            resolve()
+          })
         })
-      })
-    }), () => this.repeatMatchi()).then(() => this.repeatMatchi())
+      }),
+      () => this.repeatMatchi()
+    ).then(() => this.repeatMatchi())
   },
   async repeatMatchiPadel() {
-    const matchiPadelClubs = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs => clubs.filter(club => club.tag === 'matchipadel'))
-    Promise.all(matchiPadelClubs.map(club => {
-      return new Promise(resolve => {
-        const delay = { minDelay: settings.matchiPadelMinDelay * matchiPadelClubs.length, maxDelay: settings.matchiPadelMaxDelay * matchiPadelClubs.length }
-        const matchiPadelClient = new MatchiPadelClient(club, delay)
-        setTimeout(() => matchiPadelClient.init(), Helper.randomIntFromInterval(settings.matchiPadelMinDelay, settings.matchiPadelMaxDelay))
-        matchiPadelClient.on('slotsLoaded', (res) => {
-          console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at ${club.name}`)
-          resolve()
+    const matchiPadelClubs = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(
+      clubs => clubs.filter(club => club.tag === 'matchipadel')
+    )
+    Promise.all(
+      matchiPadelClubs.map(club => {
+        return new Promise(resolve => {
+          const delay = {
+            minDelay: settings.matchiPadelMinDelay * matchiPadelClubs.length,
+            maxDelay: settings.matchiPadelMaxDelay * matchiPadelClubs.length
+          }
+          const matchiPadelClient = new MatchiPadelClient(club, delay)
+          setTimeout(
+            () => matchiPadelClient.init(),
+            Helper.randomIntFromInterval(settings.matchiPadelMinDelay, settings.matchiPadelMaxDelay)
+          )
+          matchiPadelClient.on('slotsLoaded', res => {
+            console.log(`${res.foundSlots} slots (${res.savedSlots} new) found at ${club.name}`)
+            resolve()
+          })
         })
-      })
-    }), () => this.repeatMatchiPadel()).then(() => this.repeatMatchiPadel())
+      }),
+      () => this.repeatMatchiPadel()
+    ).then(() => this.repeatMatchiPadel())
   }
 }

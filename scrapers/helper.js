@@ -71,7 +71,7 @@ module.exports = class Helper {
     const currentSlotsOfTheDay = await rp({ uri: `${process.env.API_HOST}/api/slot/filter`, qs: { clubId, date }, json: true })
     const slotsToBeDeleted = currentSlotsOfTheDay.filter(x => slots.some(y => y.slotKey === x.key) === false)
     if (slotsToBeDeleted.length > 0) {
-      rp({ uri: `${process.env.API_HOST}/api/slot/many`, method: 'DELETE', json: true, body: slotsToBeDeleted })
+      await rp({ uri: `${process.env.API_HOST}/api/slot/many`, method: 'DELETE', json: true, body: slotsToBeDeleted })
     }
     return rp({ uri: `${process.env.API_HOST}/api/slot/many`, method: 'POST', json: true, body: slots })
   }
