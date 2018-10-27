@@ -1,11 +1,11 @@
-const HellasClient = require("./scrapers/HellasClient");
-const MatchiClient = require("./scrapers/MatchiClient");
-const MatchiPadelClient = require("./scrapers/MatchiPadelClient");
-const EnskedeClient = require("./scrapers/EnskedeClient");
-const MyCourtClient = require("./scrapers/MyCourtClient");
-const settings = require("./settings");
-const Helper = require("./scrapers/helper");
-const rp = require("request-promise");
+const HellasClient = require('./scrapers/HellasClient');
+const MatchiClient = require('./scrapers/MatchiClient');
+const MatchiPadelClient = require('./scrapers/MatchiPadelClient');
+const EnskedeClient = require('./scrapers/EnskedeClient');
+const MyCourtClient = require('./scrapers/MyCourtClient');
+const settings = require('./settings');
+const Helper = require('./scrapers/helper');
+const rp = require('request-promise');
 
 module.exports = {
   init() {
@@ -14,14 +14,14 @@ module.exports = {
 
     const hellasClient = new HellasClient();
     hellasClient.init();
-    this.initMycourt();
+    // this.initMycourt();
     this.repeatMatchi();
     this.repeatMatchiPadel();
   },
   async initMycourt() {
     const myCourtClient = new MyCourtClient();
     myCourtClient.init();
-    myCourtClient.on("slotsLoaded", ({ foundSlots, savedSlots, clubName }) => {
+    myCourtClient.on('slotsLoaded', ({ foundSlots, savedSlots, clubName }) => {
       console.log(
         `${foundSlots} slots (${savedSlots} new) found at ${clubName}`
       );
@@ -31,7 +31,7 @@ module.exports = {
     const matchiClubs = await rp({
       uri: `${process.env.API_HOST}/api/club/list-current`,
       json: true
-    }).then(clubs => clubs.filter(club => club.tag === "matchi"));
+    }).then(clubs => clubs.filter(club => club.tag === 'matchi'));
     Promise.all(
       matchiClubs.map(club => {
         return new Promise(resolve => {
@@ -47,7 +47,7 @@ module.exports = {
               settings.matchiMaxDelay
             )
           );
-          matchiClient.on("slotsLoaded", res => {
+          matchiClient.on('slotsLoaded', res => {
             console.log(
               `${res.foundSlots} slots (${res.savedSlots} new) found at ${
                 club.name
@@ -64,7 +64,7 @@ module.exports = {
     const matchiPadelClubs = await rp({
       uri: `${process.env.API_HOST}/api/club/list-current`,
       json: true
-    }).then(clubs => clubs.filter(club => club.tag === "matchipadel"));
+    }).then(clubs => clubs.filter(club => club.tag === 'matchipadel'));
     Promise.all(
       matchiPadelClubs.map(club => {
         return new Promise(resolve => {
@@ -80,7 +80,7 @@ module.exports = {
               settings.matchiPadelMaxDelay
             )
           );
-          matchiPadelClient.on("slotsLoaded", res => {
+          matchiPadelClient.on('slotsLoaded', res => {
             console.log(
               `${res.foundSlots} slots (${res.savedSlots} new) found at ${
                 club.name
