@@ -14,7 +14,7 @@ module.exports = {
 
     const hellasClient = new HellasClient();
     hellasClient.init();
-    // this.initMycourt();
+    this.initMycourt();
     this.repeatMatchi();
     this.repeatMatchiPadel();
   },
