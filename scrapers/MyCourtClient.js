@@ -16,9 +16,10 @@ module.exports = class MyCourtClient extends EventEmitter {
 
   async repeater() {
     this.logIn('http://www.mycourt.se/index.php').then(async () => {
-      const clubs = await rp({ uri: `${process.env.API_HOST}/api/club/list-current`, json: true }).then(clubs =>
-        clubs.filter(club => club.tag === 'mycourt')
-      );
+      const clubs = await rp({
+        uri: `${process.env.API_HOST}/api/club/${process.env.CLUB_PATH}`,
+        json: true
+      }).then(clubs => clubs.filter(club => club.tag === 'mycourt'));
       this.scrapeClubsRecursively(clubs).then(slots => {
         this.repeater();
       });
@@ -37,14 +38,18 @@ module.exports = class MyCourtClient extends EventEmitter {
               club: target,
               minDelay: settings.minDelay,
               maxDelay: settings.maxDelay,
+              // minDelay: 10,
+              // maxDelay: 1000,
               scraperCallback: this.scrapeDay,
-              self: this,
+              self: this
             };
             const daySlots = await Helper.slotRequestScheduler(context);
             slots = [...slots, ...daySlots];
             resolve(this.scrapeClubsRecursively(clubs, slots));
           } catch (error) {
-            console.error(`There was an error scraping ${target.name}: ${error}`);
+            console.error(
+              `There was an error scraping ${target.name}: ${error}`
+            );
             return this.scrapeClubsRecursively({ clubs }, slots);
           }
         });
@@ -58,9 +63,11 @@ module.exports = class MyCourtClient extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.driver.get('http://www.mycourt.se/your_clubs.php').then(() => {
         setTimeout(() => {
-          this.driver.executeScript('go_to_club(' + clubId + ',"sp",0)').then(() => {
-            setTimeout(() => resolve(), 1000);
-          });
+          this.driver
+            .executeScript('go_to_club(' + clubId + ',"sp",0)')
+            .then(() => {
+              setTimeout(() => resolve(), 1000);
+            });
         }, 2000);
       });
     });
@@ -76,7 +83,9 @@ module.exports = class MyCourtClient extends EventEmitter {
   parseCourtNumber(element, $) {
     try {
       var columnId = element.closest('td').index();
-      var columnHeader = $('[class="tableFloatingHeader"]').children()[columnId];
+      var columnHeader = $('[class="tableFloatingHeader"]').children()[
+        columnId
+      ];
       const number = $('div', columnHeader)
         .html()
         .replace(/\D/g, '');
@@ -92,7 +101,7 @@ module.exports = class MyCourtClient extends EventEmitter {
       const result = {
         surface: 'hardcourt',
         type: 'inomhus',
-        court,
+        court
       };
       Object.keys(club.courts).forEach(courtGroupKey => {
         const startCourt = Number(courtGroupKey.split('-')[0]);
@@ -108,7 +117,7 @@ module.exports = class MyCourtClient extends EventEmitter {
       return {
         surface: 'hardcourt',
         type: 'inomhus',
-        court,
+        court
       };
     }
   }
@@ -169,7 +178,7 @@ module.exports = class MyCourtClient extends EventEmitter {
         timestamp: timestamp,
         date: currentDate.getDate(),
         month: currentDate.getMonth() + 1,
-        year: currentDate.getFullYear(),
+        year: currentDate.getFullYear()
       });
       currentDate.setDate(currentDate.getDate() + 1);
     }
@@ -196,39 +205,54 @@ module.exports = class MyCourtClient extends EventEmitter {
   async logIn(url) {
     return new Promise((resolve, reject) => {
       this.driver.get(url).then(async () => {
-        const elements = await this.driver.findElements(webdriver.By.className('button small-button signin-button')); // .then((elements) => {
+        const elements = await this.driver.findElements(
+          webdriver.By.className('button small-button signin-button')
+        ); // .then((elements) => {
         if (elements.length > 0) {
           elements[0].click().then(() => {
-            this.driver.wait(until.elementLocated(webdriver.By.id('email')), 3000).then(() => {
-              setTimeout(async () => {
-                this.driver.findElement(webdriver.By.id('email')).sendKeys(process.env.MAIL_ADDRESS);
-                this.driver.findElement(webdriver.By.id('password')).sendKeys(process.env.MAIL_PASS);
-                const elems = await this.driver.findElements(webdriver.By.name('agree_terms_conditions'));
-                elems.forEach(element => {
-                  var elem = element;
-                  element.getAttribute('type').then(value => {
-                    if (value && value.toLowerCase() === 'checkbox') {
-                      this.driver.executeScript("arguments[0].setAttribute('checked', 'checkeed')", elem);
-                    }
-                  }); // table_cust.php?today=1539786244059
-                  //                         1539699564846
-                });
+            this.driver
+              .wait(until.elementLocated(webdriver.By.id('email')), 3000)
+              .then(() => {
                 setTimeout(async () => {
-                  const elements = await this.driver.findElements(
-                    webdriver.By.className('button primary-button track-event')
+                  this.driver
+                    .findElement(webdriver.By.id('email'))
+                    .sendKeys(process.env.MAIL_ADDRESS);
+                  this.driver
+                    .findElement(webdriver.By.id('password'))
+                    .sendKeys(process.env.MAIL_PASS);
+                  const elems = await this.driver.findElements(
+                    webdriver.By.name('agree_terms_conditions')
                   );
-                  elements.forEach(element => {
-                    element.getAttribute('value').then(value => {
-                      if (value && value.toLowerCase() === 'logga in') {
-                        element.click().then(() => {
-                          resolve();
-                        });
+                  elems.forEach(element => {
+                    var elem = element;
+                    element.getAttribute('type').then(value => {
+                      if (value && value.toLowerCase() === 'checkbox') {
+                        this.driver.executeScript(
+                          "arguments[0].setAttribute('checked', 'checkeed')",
+                          elem
+                        );
                       }
-                    });
+                    }); // table_cust.php?today=1539786244059
+                    //                         1539699564846
                   });
+                  setTimeout(async () => {
+                    const elements = await this.driver.findElements(
+                      webdriver.By.className(
+                        'button primary-button track-event'
+                      )
+                    );
+                    elements.forEach(element => {
+                      element.getAttribute('value').then(value => {
+                        if (value && value.toLowerCase() === 'logga in') {
+                          element.click().then(() => {
+                            resolve();
+                          });
+                        }
+                      });
+                    });
+                  }, 1000);
                 }, 1000);
-              }, 1000);
-            });
+              });
           });
         } else {
           // Already logged in

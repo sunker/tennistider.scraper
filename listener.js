@@ -28,16 +28,19 @@ module.exports = {
     });
   },
   async repeatMatchi() {
-    const matchiClubs = await rp({
-      uri: `${process.env.API_HOST}/api/club/list-current`,
-      json: true
-    }).then(clubs => clubs.filter(club => club.tag === 'matchi'));
+    const matchiClubs = await rp(
+      `${process.env.API_HOST}/api/club/${process.env.CLUB_PATH}`,
+      {
+        json: true
+      }
+    ).then(clubs => clubs.filter(club => club.tag === 'matchi'));
+    const shuffledClubs = shuffle(matchiClubs);
     Promise.all(
-      matchiClubs.map(club => {
+      shuffledClubs.map(club => {
         return new Promise(resolve => {
           const delay = {
-            minDelay: settings.matchiMinDelay * matchiClubs.length,
-            maxDelay: settings.matchiMaxDelay * matchiClubs.length
+            minDelay: settings.matchiMinDelay * shuffledClubs.length,
+            maxDelay: settings.matchiMaxDelay * shuffledClubs.length
           };
           const matchiClient = new MatchiClient(club, delay);
           setTimeout(
@@ -61,16 +64,19 @@ module.exports = {
     ).then(() => this.repeatMatchi());
   },
   async repeatMatchiPadel() {
-    const matchiPadelClubs = await rp({
-      uri: `${process.env.API_HOST}/api/club/list-current`,
-      json: true
-    }).then(clubs => clubs.filter(club => club.tag === 'matchipadel'));
+    const matchiPadelClubs = await rp(
+      `${process.env.API_HOST}/api/club/${process.env.CLUB_PATH}`,
+      {
+        json: true
+      }
+    ).then(clubs => clubs.filter(club => club.tag === 'matchipadel'));
+    const shuffledClubs = shuffle(matchiPadelClubs);
     Promise.all(
-      matchiPadelClubs.map(club => {
+      shuffledClubs.map(club => {
         return new Promise(resolve => {
           const delay = {
-            minDelay: settings.matchiPadelMinDelay * matchiPadelClubs.length,
-            maxDelay: settings.matchiPadelMaxDelay * matchiPadelClubs.length
+            minDelay: settings.matchiPadelMinDelay * shuffledClubs.length,
+            maxDelay: settings.matchiPadelMaxDelay * shuffledClubs.length
           };
           const matchiPadelClient = new MatchiPadelClient(club, delay);
           setTimeout(
@@ -94,3 +100,11 @@ module.exports = {
     ).then(() => this.repeatMatchiPadel());
   }
 };
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
