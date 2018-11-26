@@ -9,8 +9,8 @@ const rp = require('request-promise');
 
 module.exports = {
   init() {
-    // const enskedeClient = new EnskedeClient()
-    // enskedeClient.init()
+    // const enskedeClient = new EnskedeClient();
+    // enskedeClient.init();
 
     const hellasClient = new HellasClient();
     hellasClient.init();

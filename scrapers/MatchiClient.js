@@ -72,7 +72,9 @@ module.exports = class MatchiClient extends EventEmitter {
             courtNumber,
             courtNumber > 5 ? 'grus' : 'hardcourt',
             0,
-            club.url
+            club.url,
+            'inomhus',
+            'tennis'
           );
         }
       });

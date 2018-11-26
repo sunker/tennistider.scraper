@@ -1,73 +1,109 @@
 module.exports = class Slot {
-  constructor(clubId, clubName, date, timeSlot, courtNumber, surface, price, link, type = 'inomhus') {
-    this.clubId = clubId
-    this.clubName = clubName
-    this.timeSlot = timeSlot
-    this._date = date
-    this.price = price
-    this.courtNumber = courtNumber
-    this.surface = surface
-    this.link = link
-    this.type = type
-    this.key = this.slotKey
+  constructor(
+    clubId,
+    clubName,
+    date,
+    timeSlot,
+    courtNumber,
+    surface,
+    price,
+    link,
+    type = 'inomhus',
+    sport = 'tennis',
+    courtName = courtNumber !== 0 ? courtNumber.toString() : 'unknowncourt'
+  ) {
+    this.clubId = clubId;
+    this.clubName = clubName;
+    this.timeSlot = timeSlot;
+    this._date = date;
+    this.price = price;
+    this.courtNumber = courtNumber;
+    this.surface = surface;
+    this.link = link;
+    this.type = type;
+    this.sport = sport;
+    this.courtName = courtName;
+    this.key = this.slotKey;
   }
 
   get date() {
-    return new Date(this._date)
+    return new Date(this._date);
   }
 
   toSwedishDay() {
     switch (this.date.getDay()) {
       case 1:
-        return 'måndag'
+        return 'måndag';
       case 2:
-        return 'tisdag'
+        return 'tisdag';
       case 3:
-        return 'onsdag'
+        return 'onsdag';
       case 4:
-        return 'torsdag'
+        return 'torsdag';
       case 5:
-        return 'fredag'
+        return 'fredag';
       case 6:
-        return 'lördag'
+        return 'lördag';
       case 0:
-        return 'söndag'
+        return 'söndag';
       default:
-        return ''
+        return '';
     }
   }
 
   get isOnWeekend() {
-    return (this.date.getDay() === 6) || (this.date.getDay() === 0)
+    return this.date.getDay() === 6 || this.date.getDay() === 0;
   }
 
   get isMorningSlot() {
-    return (!this.isOnWeekend && this.timeSlot.startTime >= 7 && this.timeSlot.endTime <= 9)
+    return (
+      !this.isOnWeekend &&
+      this.timeSlot.startTime >= 7 &&
+      this.timeSlot.endTime <= 9
+    );
   }
 
   get isLunchtimeSlot() {
-    return (!this.isOnWeekend && this.timeSlot.startTime >= 11 && this.timeSlot.endTime <= 13)
+    return (
+      !this.isOnWeekend &&
+      this.timeSlot.startTime >= 11 &&
+      this.timeSlot.endTime <= 13
+    );
   }
 
   get isWeekdayNightSlot() {
-    return (!this.isOnWeekend && this.timeSlot.startTime >= 17)
+    return !this.isOnWeekend && this.timeSlot.startTime >= 17;
   }
 
   daysFromToday() {
-    const ONE_DAY = 1000 * 60 * 60 * 24
-    const date1_ms = new Date().getTime()
-    const date2_ms = this.date.getTime()
-    const difference_ms = Math.abs(date1_ms - date2_ms)
+    const ONE_DAY = 1000 * 60 * 60 * 24;
+    const date1_ms = new Date().getTime();
+    const date2_ms = this.date.getTime();
+    const difference_ms = Math.abs(date1_ms - date2_ms);
 
-    return Math.round(difference_ms / ONE_DAY)
+    return Math.round(difference_ms / ONE_DAY);
   }
 
   get slotKey() {
-    return this.date.getFullYear() + '_' + (this.date.getMonth() + 1) + '_' + this.date.getDate() + '_' + this.clubId + '_' + this.timeSlot.toString() + '_' + (this.surface ? this.surface : 'uknownsurface') + '_' + this.courtNumber
+    return (
+      this.date.getFullYear() +
+      '_' +
+      (this.date.getMonth() + 1) +
+      '_' +
+      this.date.getDate() +
+      '_' +
+      this.clubId +
+      '_' +
+      this.timeSlot.toString() +
+      '_' +
+      (this.surface ? this.surface : 'uknownsurface') +
+      '_' +
+      this.courtName
+    );
   }
 
   getKey(userId) {
-    return userId + '_' + this.slotKey
+    return userId + '_' + this.slotKey;
   }
 
   stringify() {
@@ -78,11 +114,24 @@ module.exports = class Slot {
       date: this._date,
       courtNumber: this.courtNumber,
       surface: this.surface,
-      timeSlot: this.timeSlot.startTime.toFixed(2).toString() + '-' + this.timeSlot.endTime.toFixed(2).toString()
-    }
+      timeSlot:
+        this.timeSlot.startTime.toFixed(2).toString() +
+        '-' +
+        this.timeSlot.endTime.toFixed(2).toString()
+    };
   }
 
   toString() {
-    return this.toSwedishDay() + ' ' + this.date.getDate() + '/' + (this.date.getMonth() + 1) + ' kl ' + this.timeSlot.toString() + ' ' + (this.surface ? this.surface : '')
+    return (
+      this.toSwedishDay() +
+      ' ' +
+      this.date.getDate() +
+      '/' +
+      (this.date.getMonth() + 1) +
+      ' kl ' +
+      this.timeSlot.toString() +
+      ' ' +
+      (this.surface ? this.surface : '')
+    );
   }
-}
+};

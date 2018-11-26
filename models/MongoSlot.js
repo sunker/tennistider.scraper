@@ -1,5 +1,5 @@
 const mongoose = require('mongoose'),
-  Schema = mongoose.Schema
+  Schema = mongoose.Schema;
 
 const slotSchema = new Schema({
   id: {
@@ -22,9 +22,11 @@ const slotSchema = new Schema({
   courtNumber: Number,
   surface: String,
   link: String,
-  type: String
-})
+  type: String,
+  sport: String,
+  courtName: String
+});
 
-const slotModel = mongoose.model('slot', slotSchema)
+const slotModel = mongoose.model('slot', slotSchema);
 
-module.exports = slotModel
+module.exports = slotModel;
