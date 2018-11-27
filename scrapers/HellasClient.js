@@ -81,7 +81,7 @@ module.exports = class HellasClient extends EventEmitter {
                 0,
                 url.replace(/&amp;/g, '&'),
                 'inomhus',
-                'tennis'
+                'Tennis'
               );
             }
           }

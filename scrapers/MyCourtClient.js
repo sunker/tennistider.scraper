@@ -147,7 +147,7 @@ module.exports = class MyCourtClient extends EventEmitter {
             0,
             club.bookingUrl,
             courtInfo.type,
-            'tennis'
+            'Tennis'
           );
         }
       });

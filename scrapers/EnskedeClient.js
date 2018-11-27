@@ -161,7 +161,7 @@ module.exports = class EnskedeClient extends EventEmitter {
           Number(price.replace(',', '.')),
           club.bookingUrl,
           'inomhus',
-          'tennis'
+          'Tennis'
         );
 
         if (!result.hasOwnProperty(date)) {
