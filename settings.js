@@ -8,6 +8,6 @@ module.exports = Object.freeze({
   matchiMaxDelay: dev ? 5000 : 25000,
   // matchiMinDelay: 100,
   // matchiMaxDelay: 500,
-  matchiPadelMinDelay: dev ? 100 : 20000,
-  matchiPadelMaxDelay: dev ? 500 : 40000
+  matchiPadelMinDelay: dev ? 1000 : 20000,
+  matchiPadelMaxDelay: dev ? 5000 : 40000
 });

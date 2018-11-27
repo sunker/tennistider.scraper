@@ -17,7 +17,7 @@ module.exports = class MyCourtClient extends EventEmitter {
   async repeater() {
     this.logIn('http://www.mycourt.se/index.php').then(async () => {
       const clubs = await rp({
-        uri: `${process.env.API_HOST}/api/club/${process.env.CLUB_PATH}`,
+        uri: `${process.env.API_HOST}/api/club/list`,
         json: true
       }).then(clubs => clubs.filter(club => club.tag === 'mycourt'));
       this.scrapeClubsRecursively(clubs).then(slots => {

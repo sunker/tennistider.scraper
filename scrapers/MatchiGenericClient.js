@@ -119,9 +119,7 @@ module.exports = class MatchiGenericClient extends EventEmitter {
 
       const slots = Object.keys(day).map(key => day[key]);
       if (slots.length > 0) {
-        console.log(slots);
-        return [];
-        //return Helper.updateSlots(slots, club.id, targetDay.timestamp);
+        return await Helper.updateSlots(slots, club.id, targetDay.timestamp);
       } else {
         return [];
       }

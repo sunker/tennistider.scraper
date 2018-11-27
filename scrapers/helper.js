@@ -108,19 +108,19 @@ module.exports = class Helper {
     // });
 
     //Delete duplicates
-    const padelSlotsToBeDeleted = await rp({
-      uri: `${process.env.API_HOST}/api/slot/upcoming-by-clubs?clubs=63`,
-      json: true
-    });
+    // const padelSlotsToBeDeleted = await rp({
+    //   uri: `${process.env.API_HOST}/api/slot/upcoming-by-clubs?clubs=63`,
+    //   json: true
+    // });
 
-    if (padelSlotsToBeDeleted.length > 0) {
-      await rp({
-        uri: `${process.env.API_HOST}/api/slot/many`,
-        method: 'DELETE',
-        json: true,
-        body: padelSlotsToBeDeleted
-      });
-    }
+    // if (padelSlotsToBeDeleted.length > 0) {
+    //   await rp({
+    //     uri: `${process.env.API_HOST}/api/slot/many`,
+    //     method: 'DELETE',
+    //     json: true,
+    //     body: padelSlotsToBeDeleted
+    //   });
+    // }
 
     const currentSlotsOfTheDay = await rp({
       uri: `${process.env.API_HOST}/api/slot/filter`,

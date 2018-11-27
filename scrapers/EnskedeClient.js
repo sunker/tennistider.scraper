@@ -52,10 +52,10 @@ module.exports = class EnskedeClient extends EventEmitter {
       await page.waitForSelector('#RRadioActivityTimeFilterForm', {
         timeout: 30000
       });
-      const element = await page.evaluate(() =>
-        document.querySelector('#RRadioActivityTimeFilterForm')
-      );
-      element.click();
+      // const element = await page.evaluate(() =>
+      //   document.querySelector('#RRadioActivityTimeFilterForm')
+      // );
+      // element.click();
       // const elements = await page.$$eval('.pdradiobox_parent', anchors =>
       //   anchors.filter(a => a.getAttribute('name') === 'Tennis 60')
       // );
