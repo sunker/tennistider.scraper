@@ -1,6 +1,7 @@
 const HellasClient = require('./scrapers/HellasClient');
 const MatchiClient = require('./scrapers/MatchiClient');
 const MatchiPadelClient = require('./scrapers/MatchiPadelClient');
+const MatchiGenericClient = require('./scrapers/MatchiGenericClient');
 const EnskedeClient = require('./scrapers/EnskedeClient');
 const MyCourtClient = require('./scrapers/MyCourtClient');
 const settings = require('./settings');
@@ -9,14 +10,16 @@ const rp = require('request-promise');
 
 module.exports = {
   init() {
-    // const enskedeClient = new EnskedeClient();
-    // enskedeClient.init();
+    const enskedeClient = new EnskedeClient();
+    enskedeClient.init();
 
-    const hellasClient = new HellasClient();
-    hellasClient.init();
-    this.initMycourt();
-    this.repeatMatchi();
-    this.repeatMatchiPadel();
+    // const hellasClient = new HellasClient();
+    // hellasClient.init();
+    // this.initMycourt();
+    // this.repeatMatchi();
+    // this.repeatMatchiPadel();
+    // this.repeatMatchiGeneric();
+    // this;
   },
   async initMycourt() {
     const myCourtClient = new MyCourtClient();
@@ -87,6 +90,43 @@ module.exports = {
             )
           );
           matchiPadelClient.on('slotsLoaded', res => {
+            console.log(
+              `${res.foundSlots} slots (${res.savedSlots} new) found at ${
+                club.name
+              }`
+            );
+            resolve();
+          });
+        });
+      }),
+      () => this.repeatMatchiPadel()
+    ).then(() => this.repeatMatchiPadel());
+  },
+  async repeatMatchiGeneric() {
+    const matchiV2Clubs = await rp(`${process.env.API_HOST}/api/club/v2/list`, {
+      json: true
+    }).then(clubs => clubs.filter(club => club.tag === 'matchi'));
+    const shuffledClubs = shuffle(matchiV2Clubs);
+    Promise.all(
+      shuffledClubs.map(club => {
+        return new Promise(resolve => {
+          // const delay = {
+          //   minDelay: settings.matchiPadelMinDelay * shuffledClubs.length,
+          //   maxDelay: settings.matchiPadelMaxDelay * shuffledClubs.length
+          // };
+          const delay = {
+            minDelay: settings.matchiPadelMinDelay,
+            maxDelay: settings.matchiPadelMaxDelay
+          };
+          const matchiGenericClient = new MatchiGenericClient(club, delay);
+          setTimeout(
+            () => matchiGenericClient.init(),
+            Helper.randomIntFromInterval(
+              settings.matchiPadelMinDelay,
+              settings.matchiPadelMaxDelay
+            )
+          );
+          matchiGenericClient.on('slotsLoaded', res => {
             console.log(
               `${res.foundSlots} slots (${res.savedSlots} new) found at ${
                 club.name

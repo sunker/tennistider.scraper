@@ -2,8 +2,15 @@ const Slot = require('../models/Slot.js'),
   EventEmitter = require('events').EventEmitter,
   Helper = require('./helper.js'),
   TimeSlot = require('../models/TimeSlot');
-
-module.exports = class MatchiPadelClient extends EventEmitter {
+const baseUrl = `https://www.matchi.se/book/listSlots?wl=&sport=[sportId]&facility=[facilityId]&date=[year]-[month]-[day]`;
+const sports = {
+  1: 'Tennis',
+  2: 'Badminton',
+  3: 'Squash',
+  4: 'Bordtennis',
+  5: 'Padel'
+};
+module.exports = class MatchiGenericClient extends EventEmitter {
   constructor(club, delay) {
     super();
     this.club = club;
@@ -11,12 +18,7 @@ module.exports = class MatchiPadelClient extends EventEmitter {
   }
 
   async init() {
-    const days = Helper.getUrlsForNoOfDaysAhead(
-      this.club.url,
-      this.club.daysAhead,
-      this.club.name,
-      this.club.id
-    );
+    const days = this.buildUrls(this.club);
 
     const context = {
       days,
@@ -37,10 +39,33 @@ module.exports = class MatchiPadelClient extends EventEmitter {
     );
   }
 
+  buildUrls(club) {
+    return Object.keys(sports).reduce((acc, curr) => {
+      const url = baseUrl
+        .replace('[facilityId]', club.facilityId)
+        .replace('[sportId]', curr);
+      const a = Helper.getUrlsForNoOfDaysAhead(
+        url,
+        acc === 1 ? 14 : 7,
+        club.name,
+        club.id
+      );
+      return [
+        ...acc,
+        ...Helper.getUrlsForNoOfDaysAhead(
+          url,
+          acc === 1 ? 14 : 7,
+          club.name,
+          club.id
+        )
+      ];
+    }, []);
+  }
+
   async parse(targetDay, club) {
     try {
-      const $ = await Helper.getUrl(targetDay.url);
       let day = {};
+      const $ = await Helper.getUrl(targetDay.url);
       $('.panel.panel-default.collapse').filter(function(a, b) {
         let startTime, startHours, startMinutes;
         const originalDate = new Date();
@@ -63,7 +88,10 @@ module.exports = class MatchiPadelClient extends EventEmitter {
           const courtName = element.children()[0].children[0].data;
           const minutes = element.children()[1].children[0].data;
           let sport = element.children()[2].children[0].data;
-          const surface = element.children()[3].children[0].data;
+          const surface = element.children()[3].children[0].data.trim();
+          const link = `https://www.matchi.se${
+            element.children()[5].children[1].attribs.href
+          }`;
           const date = new Date(
             originalDate.getTime() + Number(minutes.substring(0, 2)) * 60000
           );
@@ -78,11 +106,11 @@ module.exports = class MatchiPadelClient extends EventEmitter {
               targetDay.timestamp,
               timeSlot,
               0,
-              surface,
+              surface === 'Övrigt' ? 'uknownsurface' : surface,
               0,
-              club.url,
+              link,
               'inomhus',
-              'padel',
+              sport,
               courtName
             );
           }
@@ -90,7 +118,13 @@ module.exports = class MatchiPadelClient extends EventEmitter {
       });
 
       const slots = Object.keys(day).map(key => day[key]);
-      return Helper.updateSlots(slots, club.id, targetDay.timestamp);
+      if (slots.length > 0) {
+        console.log(slots);
+        return [];
+        //return Helper.updateSlots(slots, club.id, targetDay.timestamp);
+      } else {
+        return [];
+      }
     } catch (error) {
       console.error('There was an error scraping ' + club.url, error);
     }

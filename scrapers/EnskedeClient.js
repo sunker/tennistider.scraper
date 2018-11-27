@@ -56,12 +56,7 @@ module.exports = class EnskedeClient extends EventEmitter {
         webdriver.By.id('ResourceBookingSchemaPanel')
       );
       html = await element.getAttribute('innerHTML');
-      await this.parse(
-        cheerio.load(html),
-        activityName === surface,
-        this,
-        club
-      );
+      await this.parse(cheerio.load(html), surface, this, club);
       await this.clickButton(true);
     } catch (error) {
       console.error(error);
@@ -173,8 +168,8 @@ module.exports = class EnskedeClient extends EventEmitter {
   initDriver() {
     try {
       this.driver = new webdriver.Builder()
-        .forBrowser('phantomjs')
-        // .forBrowser('chrome')
+        // .forBrowser('phantomjs')
+        .forBrowser('chrome')
         .build();
     } catch (error) {
       console.error(error);

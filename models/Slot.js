@@ -96,9 +96,11 @@ module.exports = class Slot {
       '_' +
       this.timeSlot.toString() +
       '_' +
-      (this.surface ? this.surface : 'uknownsurface') +
+      (this.surface ? this.surface.replace(' ', '-') : 'uknownsurface') +
       '_' +
-      this.courtName
+      this.courtName.replace(' ', '-') +
+      '_' +
+      this.sport.replace(' ', '-')
     );
   }
 
