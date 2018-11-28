@@ -15,9 +15,7 @@ module.exports = {
 
     const hellasClient = new HellasClient();
     hellasClient.init();
-    this.initMycourt();
-    // this.repeatMatchi();
-    // this.repeatMatchiPadel();
+    // this.initMycourt();
     this.repeatMatchiGeneric();
   },
   async initMycourt() {
@@ -29,82 +27,13 @@ module.exports = {
       );
     });
   },
-  async repeatMatchi() {
-    const matchiClubs = await rp(
-      `${process.env.API_HOST}/api/club/${process.env.CLUB_PATH}`,
+  async repeatMatchiGeneric() {
+    const matchiV2Clubs = await rp(
+      `${process.env.API_HOST}/api/club/v2/${process.env.CLUB_PATH}`,
       {
         json: true
       }
     ).then(clubs => clubs.filter(club => club.tag === 'matchi'));
-    const shuffledClubs = shuffle(matchiClubs);
-    Promise.all(
-      shuffledClubs.map(club => {
-        return new Promise(resolve => {
-          const delay = {
-            minDelay: settings.matchiMinDelay * shuffledClubs.length,
-            maxDelay: settings.matchiMaxDelay * shuffledClubs.length
-          };
-          const matchiClient = new MatchiClient(club, delay);
-          setTimeout(
-            () => matchiClient.init(),
-            Helper.randomIntFromInterval(
-              settings.matchiMinDelay,
-              settings.matchiMaxDelay
-            )
-          );
-          matchiClient.on('slotsLoaded', res => {
-            console.log(
-              `${res.foundSlots} slots (${res.savedSlots} new) found at ${
-                club.name
-              }`
-            );
-            resolve();
-          });
-        });
-      }),
-      () => this.repeatMatchi()
-    ).then(() => this.repeatMatchi());
-  },
-  async repeatMatchiPadel() {
-    const matchiPadelClubs = await rp(
-      `${process.env.API_HOST}/api/club/${process.env.CLUB_PATH}`,
-      {
-        json: true
-      }
-    ).then(clubs => clubs.filter(club => club.tag === 'matchipadel'));
-    const shuffledClubs = shuffle(matchiPadelClubs);
-    Promise.all(
-      shuffledClubs.map(club => {
-        return new Promise(resolve => {
-          const delay = {
-            minDelay: settings.matchiPadelMinDelay * shuffledClubs.length,
-            maxDelay: settings.matchiPadelMaxDelay * shuffledClubs.length
-          };
-          const matchiPadelClient = new MatchiPadelClient(club, delay);
-          setTimeout(
-            () => matchiPadelClient.init(),
-            Helper.randomIntFromInterval(
-              settings.matchiPadelMinDelay,
-              settings.matchiPadelMaxDelay
-            )
-          );
-          matchiPadelClient.on('slotsLoaded', res => {
-            console.log(
-              `${res.foundSlots} slots (${res.savedSlots} new) found at ${
-                club.name
-              }`
-            );
-            resolve();
-          });
-        });
-      }),
-      () => this.repeatMatchiPadel()
-    ).then(() => this.repeatMatchiPadel());
-  },
-  async repeatMatchiGeneric() {
-    const matchiV2Clubs = await rp(`${process.env.API_HOST}/api/club/v2/${process.env.CLUB_PATH}`, {
-      json: true
-    }).then(clubs => clubs.filter(club => club.tag === 'matchi'));
     const shuffledClubs = shuffle(matchiV2Clubs);
     Promise.all(
       shuffledClubs.map(club => {
