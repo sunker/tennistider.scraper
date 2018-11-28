@@ -49,6 +49,7 @@ module.exports = class EnskedeClient extends EventEmitter {
       // await page.waitForSelector('.pdradiobox_parent', {
       //   timeout: 30000
       // });
+
       await page.waitForSelector('#RRadioActivityTimeFilterForm', {
         timeout: 30000
       });
