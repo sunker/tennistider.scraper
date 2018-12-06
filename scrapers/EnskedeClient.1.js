@@ -129,6 +129,7 @@ module.exports = class EnskedeClient extends EventEmitter {
           .children()[4]
           .firstChild.data.trim()
           .split(' ');
+        console.log(surface, 'surface');
 
         const timestamp = new Date(date);
         const timeSlot = new TimeSlot(Number(startTime.replace(':', '.')));

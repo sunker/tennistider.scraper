@@ -10,13 +10,13 @@ const rp = require('request-promise');
 
 module.exports = {
   init() {
-    // const enskedeClient = new EnskedeClient();
-    // enskedeClient.init();
+    const enskedeClient = new EnskedeClient();
+    enskedeClient.init();
 
-    const hellasClient = new HellasClient();
-    hellasClient.init();
+    // const hellasClient = new HellasClient();
+    // hellasClient.init();
     // this.initMycourt();
-    this.repeatMatchiGeneric();
+    // this.repeatMatchiGeneric();
   },
   async initMycourt() {
     const myCourtClient = new MyCourtClient();

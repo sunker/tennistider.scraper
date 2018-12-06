@@ -152,6 +152,7 @@ module.exports = class EnskedeClient extends EventEmitter {
         const timestamp = new Date(date);
         const timeSlot = new TimeSlot(Number(startTime.replace(':', '.')));
         const courtNumber = 0;
+        console.log(surface, 'surface');
         const slot = new Slot(
           club.id,
           club.name,
@@ -199,7 +200,7 @@ module.exports = class EnskedeClient extends EventEmitter {
   async selectActivity(activityName, club) {
     try {
       const dropdown = await this.driver.wait(
-        this.driver.findElement(
+        await this.driver.findElement(
           webdriver.By.id(
             'InfoObject_NoneLabelFor_RadioActivityTimeFilterCombo'
           )
