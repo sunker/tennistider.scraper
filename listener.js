@@ -28,9 +28,7 @@ module.exports = {
       {
         json: true
       }
-    ).then(clubs =>
-      clubs.filter(club => club.tag === 'matchi').filter(club => club.id === 1)
-    );
+    ).then(clubs => clubs.filter(club => club.tag === 'matchi'));
 
     const shuffledClubs = shuffle(matchiV2Clubs);
     Promise.all(
