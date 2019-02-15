@@ -1,8 +1,5 @@
-const HellasClient = require('./scrapers/HellasClient');
-const MatchiClient = require('./scrapers/MatchiClient');
-const MatchiPadelClient = require('./scrapers/MatchiPadelClient');
 const MatchiGenericClient = require('./scrapers/MatchiGenericClient');
-const EnskedeClient = require('./scrapers/EnskedeClient.1');
+const EnskedeClient = require('./scrapers/EnskedeClient');
 const MyCourtClient = require('./scrapers/MyCourtClient');
 const settings = require('./settings');
 const Helper = require('./scrapers/helper');
@@ -13,8 +10,6 @@ module.exports = {
     const enskedeClient = new EnskedeClient();
     enskedeClient.init();
 
-    // const hellasClient = new HellasClient();
-    // hellasClient.init();
     // this.initMycourt();
     // this.repeatMatchiGeneric();
   },

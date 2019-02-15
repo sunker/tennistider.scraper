@@ -3,11 +3,11 @@ const settings = require('../settings'),
   EventEmitter = require('events').EventEmitter,
   Helper = require('./helper.js'),
   cheerio = require('cheerio'),
+  { addScrape } = require('../models/metrics'),
   moment = require('moment'),
   webdriver = require('selenium-webdriver'),
   until = webdriver.until,
   TimeSlot = require('../models/TimeSlot'),
-  puppeteer = require('puppeteer'),
   rp = require('request-promise');
 
 module.exports = class EnskedeClient extends EventEmitter {
@@ -30,37 +30,19 @@ module.exports = class EnskedeClient extends EventEmitter {
 
   async loadSessionUrl(club, activityName) {
     try {
-      const browser = await puppeteer.launch({ headless: true });
-      const page = await browser.newPage();
-      await page.goto('https://www.enskederackethall.se/Onlinebokning.html');
-
-      await page.waitForSelector('#PASTELLDATA_WRAPPER_IFRAME_0', {
-        timeout: 30000
-      });
-
-      const sessionUrl = await page.evaluate(() =>
-        document
-          .querySelector('#PASTELLDATA_WRAPPER_IFRAME_0')
-          .getAttribute('src')
+      this.driver
+        .manage()
+        .window()
+        .setSize(440, 1280);
+      await this.driver.get(
+        'https://www.enskederackethall.se/Onlinebokning.html'
       );
-      // const sessionUrl = await elements.getAttribute('src');
-      await page.goto(sessionUrl);
-
-      // await page.waitForSelector('.pdradiobox_parent', {
-      //   timeout: 30000
-      // });
-
-      await page.waitForSelector('#RRadioActivityTimeFilterForm', {
-        timeout: 30000
-      });
-      // const element = await page.evaluate(() =>
-      //   document.querySelector('#RRadioActivityTimeFilterForm')
-      // );
-      // element.click();
-      // const elements = await page.$$eval('.pdradiobox_parent', anchors =>
-      //   anchors.filter(a => a.getAttribute('name') === 'Tennis 60')
-      // );
-
+      const elements = await this.driver.wait(
+        until.elementLocated(webdriver.By.id('PASTELLDATA_WRAPPER_IFRAME_0')),
+        5000
+      );
+      const sessionUrl = await elements.getAttribute('src');
+      await this.driver.get(sessionUrl);
       await this.selectActivity(activityName, club);
       let element = await this.driver.wait(
         until.elementLocated(webdriver.By.id('ResourceBookingSchemaPanel')),
@@ -86,8 +68,8 @@ module.exports = class EnskedeClient extends EventEmitter {
 
   async restartSession(club, activityName) {
     setTimeout(async () => {
-      // await this.driver.quit();
-      // this.initDriver();
+      await this.driver.quit();
+      this.initDriver();
       this.loadSessionUrl(
         club,
         activityName === 'Tennis 60' ? 'Grustennis 60' : 'Tennis 60'
@@ -148,11 +130,15 @@ module.exports = class EnskedeClient extends EventEmitter {
           .children()[4]
           .firstChild.data.trim()
           .split(' ');
+        console.log(surface, 'surface');
+
+        addScrape.inc({
+          club_name: club.tagName
+        });
 
         const timestamp = new Date(date);
         const timeSlot = new TimeSlot(Number(startTime.replace(':', '.')));
         const courtNumber = 0;
-        console.log(surface, 'surface');
         const slot = new Slot(
           club.id,
           club.name,
@@ -163,7 +149,7 @@ module.exports = class EnskedeClient extends EventEmitter {
           Number(price.replace(',', '.')),
           club.bookingUrl,
           'inomhus',
-          'Tennis'
+          'tennis'
         );
 
         if (!result.hasOwnProperty(date)) {
@@ -188,8 +174,8 @@ module.exports = class EnskedeClient extends EventEmitter {
   initDriver() {
     try {
       this.driver = new webdriver.Builder()
-        // .forBrowser('phantomjs')
-        .forBrowser('chrome')
+        .forBrowser('phantomjs')
+        // .forBrowser('chrome')
         .build();
     } catch (error) {
       console.error(error);
@@ -200,7 +186,7 @@ module.exports = class EnskedeClient extends EventEmitter {
   async selectActivity(activityName, club) {
     try {
       const dropdown = await this.driver.wait(
-        await this.driver.findElement(
+        this.driver.findElement(
           webdriver.By.id(
             'InfoObject_NoneLabelFor_RadioActivityTimeFilterCombo'
           )

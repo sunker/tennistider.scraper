@@ -1,7 +1,9 @@
 const Slot = require('../models/Slot.js'),
   EventEmitter = require('events').EventEmitter,
   Helper = require('./helper.js'),
+  { addScrape } = require('../models/metrics'),
   TimeSlot = require('../models/TimeSlot');
+
 const baseUrl = `https://www.matchi.se/book/listSlots?wl=&sport=[sportId]&facility=[facilityId]&date=[year]-[month]-[day]`;
 const sports = {
   1: 'Tennis',
@@ -64,6 +66,9 @@ module.exports = class MatchiGenericClient extends EventEmitter {
 
   async parse(targetDay, club) {
     try {
+      addScrape.inc({
+        club_name: club.tagName
+      });
       let day = {};
       const $ = await Helper.getUrl(targetDay.url);
       $('.panel.panel-default.collapse').filter(function(a, b) {

@@ -5,6 +5,7 @@ const settings = require('../settings'),
   cheerio = require('cheerio'),
   webdriver = require('selenium-webdriver'),
   until = webdriver.until,
+  { addScrape } = require('../models/metrics'),
   TimeSlot = require('../models/TimeSlot'),
   rp = require('request-promise');
 
@@ -75,6 +76,9 @@ module.exports = class MyCourtClient extends EventEmitter {
 
   async scrapeDay(day, club, self) {
     await self.driver.get(day.url);
+    addScrape.inc({
+      club_name: club.tagName
+    });
     const html = await self.driver.getPageSource();
     const result = await self.parse(cheerio.load(html), club, self, day);
     return result;
