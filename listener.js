@@ -7,11 +7,11 @@ const rp = require('request-promise');
 
 module.exports = {
   init() {
-    const enskedeClient = new EnskedeClient();
-    enskedeClient.init();
+    // const enskedeClient = new EnskedeClient();
+    // enskedeClient.init();
 
     // this.initMycourt();
-    // this.repeatMatchiGeneric();
+    this.repeatMatchiGeneric();
   },
   async initMycourt() {
     const myCourtClient = new MyCourtClient();
@@ -28,7 +28,10 @@ module.exports = {
       {
         json: true
       }
-    ).then(clubs => clubs.filter(club => club.tag === 'matchi'));
+    ).then(clubs =>
+      clubs.filter(club => club.tag === 'matchi').filter(club => club.id === 1)
+    );
+
     const shuffledClubs = shuffle(matchiV2Clubs);
     Promise.all(
       shuffledClubs.map(club => {
